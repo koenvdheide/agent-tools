@@ -1,6 +1,33 @@
 # review-plugins
 
-A Claude Code plugin marketplace for reviewing AI-generated output.
+Our AI overlords like to slip in some slop every now and then to keep us on our toes. But there is a saving grace: they're error-prone when generating, but good at catching these same errors when reviewing. The same model that'll confidently make up an API call will flag that exact fabrication when you paste it back and ask it to look for issues. And it gets better when you cross models: e.g. Sonnet reviewing Opus, or sending a plan through Codex for a second opinion, catches way more than any single model reviewing itself.
+
+That's the whole idea behind this marketplace. The plugins here make review a real step in your workflow to help you catch such errors early before they compound.
+
+My own setup: I work in Claude Code using Opus but run the `claude-reviewer` agent on Sonnet over anything that matters: code changes, plans, designs etc. Sonnet is cheaper (which adds up fast when you're reviewing constantly), surprisingly good at reviewing and crossing models like this seems to catch errors more reliably. 
+
+I hit `/qa` to trigger a review on basically anything a Claude Code session produces. I collected the statistics of these review calls:
+
+The **1,500+ reviewer runs** over 30+ projects (code, bug hunting, architecture and design docs, academic archival research and writing etc.) caught the following:
+
+- **~86% of reviews surfaced at least one real issue** (reviewer flagged it, main session confirmed it was actually an error)
+- **~2.3 confirmed errors per review** on average, plus ~2.7 verification flags for human follow-up
+
+**What it tends to catch:**
+
+| Category | Share of confirmed errors | Typical example |
+| --- | --- | --- |
+| Consistency | ~30% | Summary says "3 categories", details contain 4 |
+| Counting & arithmetic | ~10% | "Top 10" list contains 9 items |
+| Completeness | ~10% | Promised section never appears; JSON array cut off mid-object |
+| Stale references | ~5% | Docstrings describing old behavior after a refactor |
+| Logic errors | ~5% | Boolean OR masking a missing field check |
+| Hallucinations / factual errors | ~2% | Fabricated citations, invented claims, wrong function calls |
+
+Every so often it catches something bad enough that you scrap the plan instead of patching it. These include fabricated dependencies that don't exist, load-bearing assumptions that turn out to be false, or a misread premise that's quietly poisoned every conclusion downstream.
+
+If you're not reviewing, you're shipping roughly two real errors per generation. And occasionally a whole plan built on something that isn't true.
+
 
 ## Install
 
@@ -10,12 +37,25 @@ Add the marketplace:
 /plugin marketplace add koenvdheide/review-plugins
 ```
 
-Install `claude-reviewer` **first** — the other plugins depend on its `reviewer` subagent for mandatory QA steps:
+Install `claude-reviewer` **first** — the other plugins work better with its `reviewer` subagent for mandatory QA steps:
 
 ```text
 /plugin install claude-reviewer@review-plugins
+```
+
+If you have a Codex subscription there is a skill that wraps the Codex CLI for review sessions:
+
+```text
 /plugin install codex@review-plugins
+```
+
+And for the theater kids there is the same for the Gemini CLI:
+```text
 /plugin install gemini@review-plugins
+```
+
+
+```text
 /plugin install brainstorming@review-plugins
 ```
 
