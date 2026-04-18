@@ -16,6 +16,13 @@
       "description": "QA reviewer subagent and /claude-reviewer:qa skill that catches miscounts, duplicates, stale totals, hallucinations, and internal contradictions in AI-generated output",
       "category": "qa",
       "keywords": ["qa", "review", "validation", "correctness"]
+    },
+    {
+      "name": "review-suite",
+      "source": "./plugins/review-suite",
+      "description": "Bundled review-workflow tooling: /review-suite:codex, /review-suite:gemini, and /review-suite:brainstorming. Depends on the claude-reviewer plugin.",
+      "category": "workflow",
+      "keywords": ["review", "qa", "llm", "codex", "gemini", "brainstorming"]
     }
   ]
 }
