@@ -4,7 +4,7 @@
     "name": "Koen van der Heide"
   },
   "metadata": {
-    "description": "Plugins for reviewing AI-generated output — subagents, skills, and related tooling."
+    "description": "Plugins for reviewing AI-generated output — reviewer subagent, external LLM CLI wrappers, and a brainstorming workflow."
   },
   "plugins": [
     {
@@ -18,11 +18,34 @@
       "keywords": ["qa", "review", "validation", "correctness"]
     },
     {
-      "name": "review-suite",
-      "source": "./plugins/review-suite",
-      "description": "Bundled review-workflow tooling: /review-suite:codex, /review-suite:gemini, and /review-suite:brainstorming. Depends on the claude-reviewer plugin.",
+      "name": "codex",
+      "source": {
+        "source": "github",
+        "repo": "koenvdheide/codex-skill"
+      },
+      "description": "Wraps the Codex CLI as an independent analysis partner — /codex:codex skill for brainstorm, red-team, debug, plan-review, diff-review, and other modes",
+      "category": "llm-tool",
+      "keywords": ["codex", "review", "llm", "cli", "red-team"]
+    },
+    {
+      "name": "gemini",
+      "source": {
+        "source": "github",
+        "repo": "koenvdheide/gemini-skill"
+      },
+      "description": "Wraps the Gemini CLI as an independent analysis partner from a different model family — /gemini:gemini skill for brainstorm, red-team, diff-review, and other modes",
+      "category": "llm-tool",
+      "keywords": ["gemini", "review", "llm", "cli", "red-team"]
+    },
+    {
+      "name": "brainstorming",
+      "source": {
+        "source": "github",
+        "repo": "koenvdheide/brainstorming-skill"
+      },
+      "description": "Spec-document brainstorming skill: /brainstorming:brainstorming walks from idea to approved spec via clarifying questions and External Review Round with reviewer subagent + /codex:codex red-team. Fork of the brainstorming skill from obra/superpowers.",
       "category": "workflow",
-      "keywords": ["review", "qa", "llm", "codex", "gemini", "brainstorming"]
+      "keywords": ["brainstorming", "spec", "design", "review"]
     }
   ]
 }
