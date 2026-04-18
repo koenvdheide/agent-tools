@@ -5,17 +5,20 @@ skills/brainstorming
 --------------------
 
 The `brainstorming` skill in this plugin is a modified fork of the
-`brainstorming` skill from the superpowers-extended-cc-marketplace project.
+`brainstorming` skill from the obra/superpowers project (via the
+superpowers-extended-cc community fork).
 
-Upstream: superpowers-extended-cc-marketplace
-Last synced: 2026-04-17 (see top-of-file note in
-skills/brainstorming/spec-document-reviewer-prompt.md)
+Upstream license: MIT, Copyright (c) 2025 Jesse Vincent.
 
-Modifications include integration with the `reviewer` subagent from the
-`claude-reviewer` plugin for the External Review Round, and adaptations to
-the author's preferred spec-file location (`docs/superpowers/` instead of
-`~/.claude-local/superpowers/specs/`).
+The full upstream license text and attribution is in:
+  `skills/brainstorming/LICENSE-UPSTREAM`
 
-Users of this plugin should consult the upstream project's license before
-redistributing this fork. If upstream relicenses, this attribution should
-be updated and the file synced accordingly.
+That file must be preserved alongside the skill files it covers
+(SKILL.md, spec-document-reviewer-prompt.md, visual-companion.md)
+when redistributing.
+
+skills/codex, skills/gemini
+---------------------------
+
+Original work by Koen van der Heide, licensed MIT under the repo-root
+LICENSE file.

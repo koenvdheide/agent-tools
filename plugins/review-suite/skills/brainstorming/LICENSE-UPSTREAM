@@ -1,0 +1,39 @@
+This skill is a modified fork of the `brainstorming` skill from the
+obra/superpowers project (via the superpowers-extended-cc marketplace fork).
+
+The upstream source is licensed under the MIT License as follows:
+
+---
+
+MIT License
+
+Copyright (c) 2025 Jesse Vincent
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+Upstream source: https://github.com/obra/superpowers
+Community fork referenced: pcvelz/superpowers (superpowers-extended-cc-marketplace)
+Files in this directory that originated upstream: SKILL.md, spec-document-reviewer-prompt.md, visual-companion.md
+
+Modifications by Koen van der Heide:
+- Integration with the `reviewer` subagent from the `claude-reviewer` plugin for the External Review Round
+- Spec file location changed from `~/.claude-local/superpowers/specs/` to the author's convention (`docs/superpowers/`)
+- Other author-specific tweaks; see git history of this repo for details

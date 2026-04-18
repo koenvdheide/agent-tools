@@ -40,7 +40,7 @@ To iterate on this marketplace without pushing:
 
 ## Attribution
 
-`review-suite/skills/brainstorming` is a modified fork of the brainstorming skill from the `superpowers-extended-cc-marketplace` project. See [`plugins/review-suite/NOTICE`](plugins/review-suite/NOTICE) for details.
+`review-suite/skills/brainstorming` is a modified fork of the brainstorming skill from the [obra/superpowers](https://github.com/obra/superpowers) project (via the `superpowers-extended-cc` community fork). Upstream is MIT licensed, Copyright (c) 2025 Jesse Vincent. The upstream license text is preserved in [`plugins/review-suite/skills/brainstorming/LICENSE-UPSTREAM`](plugins/review-suite/skills/brainstorming/LICENSE-UPSTREAM). See also [`plugins/review-suite/NOTICE`](plugins/review-suite/NOTICE).
 
 ## License
 
