@@ -1,0 +1,21 @@
+{
+  "name": "review-plugins",
+  "owner": {
+    "name": "Koen van der Heide"
+  },
+  "metadata": {
+    "description": "Plugins for reviewing AI-generated output — subagents, skills, and related tooling."
+  },
+  "plugins": [
+    {
+      "name": "claude-reviewer",
+      "source": {
+        "source": "github",
+        "repo": "koenvdheide/claude-reviewer"
+      },
+      "description": "QA reviewer subagent and /claude-reviewer:qa skill that catches miscounts, duplicates, stale totals, hallucinations, and internal contradictions in AI-generated output",
+      "category": "qa",
+      "keywords": ["qa", "review", "validation", "correctness"]
+    }
+  ]
+}
