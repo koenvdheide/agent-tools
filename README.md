@@ -50,10 +50,12 @@ If you have a Codex subscription there is a skill that wraps the Codex CLI for r
 ```
 
 And for the theater kids there is the same for the Gemini CLI:
+
 ```text
 /plugin install gemini@review-plugins
 ```
 
+There is also a fork of the popular brainstorming plugin that incorporates /qa and /codex review calls for every major step:
 
 ```text
 /plugin install brainstorming@review-plugins
@@ -63,10 +65,10 @@ And for the theater kids there is the same for the Gemini CLI:
 
 | Plugin | Slash command | Source repo | Description |
 | --- | --- | --- | --- |
-| `claude-reviewer` | `/claude-reviewer:qa` | [koenvdheide/claude-reviewer](https://github.com/koenvdheide/claude-reviewer) | Reviewer subagent that catches miscounts, duplicates, stale totals, hallucinations, and internal contradictions. |
-| `codex` | `/codex:codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner — brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
-| `gemini` | `/gemini:gemini` | [koenvdheide/gemini-skill](https://github.com/koenvdheide/gemini-skill) | Wraps the Gemini CLI — independent analysis from a different model family. |
-| `brainstorming` | `/brainstorming:brainstorming` | [koenvdheide/brainstorming-skill](https://github.com/koenvdheide/brainstorming-skill) | Spec-document brainstorming workflow with External Review Round (reviewer + /codex:codex). Fork of obra/superpowers. |
+| `claude-reviewer` | `/qa` | [koenvdheide/claude-reviewer](https://github.com/koenvdheide/claude-reviewer) | Reviewer subagent that catches miscounts, duplicates, stale totals, hallucinations, and internal contradictions. |
+| `codex` | `/codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner — brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
+| `gemini` | `/gemini` | [koenvdheide/gemini-skill](https://github.com/koenvdheide/gemini-skill) | Wraps the Gemini CLI — independent analysis from a different model family. |
+| `brainstorming` | `/brainstorming` | [koenvdheide/brainstorming-skill](https://github.com/koenvdheide/brainstorming-skill) | Spec-document brainstorming workflow with External Review Round (reviewer + /codex:codex). Fork of obra/superpowers. |
 
 ## Dependencies between plugins
 
