@@ -38,9 +38,12 @@ Across 1,500+ reviews, the reviewer catches roughly two real errors per artifact
 
 The stats above are about the `reviewer` subagent, which catches mechanical errors in output. `/codex:codex` is a different layer: it reviews **designs and plans** adversarially, usually before implementation. Red-team mode structures output under two headings — **Breakage** (what could fail) and **Simplifications** (what's over-engineered and can be cut).
 
+**Breakage** catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests actually prove, operational risks in a rollout. In security-adjacent work it often surfaces prompt-injection risks or trust-boundary mistakes the plan took for granted.
+
+**Simplification** matters because LLM-generated plans drift toward over-engineering. A model left to plan on its own will add abstractions "for robustness," flags "for flexibility," tiers "for future expansion" etc. An adversarial second pass from another model catches it before implementation bakes it in.
+
 When I ran Codex red-team against the spec for `claude-reviewer` itself, it proposed seven Simplifications — four shipped verbatim, one I applied partially, one I kept as-is, one I didn't apply. Zero of them were wording tweaks. Every finding was a whole-concept cut — a flag, a layer, a file, a rename, a misaligned default — with a named target and a one-sentence safety rationale. Codex doesn't have a single thing it's good at flagging; it has a disposition for spotting speculative complexity wherever it lives.
 
-**Breakage** catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests actually prove, operational risks in a rollout. In security-adjacent work it often surfaces prompt-injection risks or trust-boundary mistakes the plan took for granted.
 
 Codex is most useful applied to a spec or plan *before* implementation, where removing a layer or fixing a premise is a free win rather than a refactor. Findings come with enough reasoning to either apply or reject on an informed basis — the review is adversarial by default, but not hand-wavy.
 
