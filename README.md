@@ -44,7 +44,6 @@ The stats above are about the `reviewer` subagent, which catches mechanical erro
 
 When I ran Codex red-team against the spec for `claude-reviewer` itself, it proposed seven Simplifications — four shipped verbatim, one I applied partially, one I kept as-is, one I didn't apply. Zero of them were wording tweaks. Every finding was a whole-concept cut — a flag, a layer, a file, a rename, a misaligned default — with a named target and a one-sentence safety rationale. Codex doesn't have a single thing it's good at flagging; it has a disposition for spotting speculative complexity wherever it lives.
 
-
 Codex is most useful applied to a spec or plan *before* implementation, where removing a layer or fixing a premise is a free win rather than a refactor. Findings come with enough reasoning to either apply or reject on an informed basis — the review is adversarial by default, but not hand-wavy.
 
 ## Why Gemini too
@@ -101,7 +100,6 @@ Three of the four plugins call the `reviewer` subagent from `claude-reviewer`:
 - `brainstorming` dispatches `reviewer` during the External Review Round
 
 Claude Code's plugin manifest has no auto-install dependency field, so install `claude-reviewer` manually before the others. If the reviewer subagent is unavailable, the skills fall back to self-review with a flagged caveat (see each SKILL.md).
-
 
 ## Attribution
 
