@@ -102,16 +102,6 @@ Three of the four plugins call the `reviewer` subagent from `claude-reviewer`:
 
 Claude Code's plugin manifest has no auto-install dependency field, so install `claude-reviewer` manually before the others. If the reviewer subagent is unavailable, the skills fall back to self-review with a flagged caveat (see each SKILL.md).
 
-## Local development
-
-Test the marketplace against the local path instead of GitHub:
-
-```text
-/plugin marketplace add c:/Users/koen_/Documents/Projects/review-plugins
-/plugin install claude-reviewer@review-plugins
-```
-
-Note: relative-path plugin sources only resolve when the marketplace is added via Git (not a URL to `marketplace.json`). This marketplace uses `github` sources for all four plugins, so both local-path and GitHub-added marketplaces work identically.
 
 ## Attribution
 
