@@ -36,7 +36,7 @@ Across 1,500+ reviews, the reviewer catches roughly two real errors per artifact
 
 ## What Codex reviews add
 
-The stats above are about the `reviewer` subagent, which catches mechanical errors in output. `/codex:codex` is a different layer: it reviews **designs and plans** adversarially, usually before implementation. Red-team mode structures output under two headings — **Breakage** (what could fail) and **Simplifications** (what's over-engineered and can be cut).
+The stats above are about the `reviewer` subagent, which catches mechanical errors in output. `/codex` is a different layer: it reviews **designs and plans** adversarially, usually before implementation. Red-team mode structures output under two headings — **Breakage** (what could fail) and **Simplifications** (what's over-engineered and can be cut).
 
 **Breakage** catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests actually prove, operational risks in a rollout. In security-adjacent work it often surfaces prompt-injection risks or trust-boundary mistakes the plan took for granted.
 
@@ -48,7 +48,7 @@ Codex is most useful applied to a spec or plan *before* implementation, where re
 
 ## Why Gemini too
 
-The same red-team shape applies to `/gemini:gemini` — Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
+The same red-team shape applies to `/gemini` — Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
 
 ## Plugins
 
