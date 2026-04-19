@@ -26,7 +26,13 @@ The **1,500+ reviewer runs** over 30+ projects (code, bug hunting, architecture 
 
 Every so often it catches something bad enough that you scrap the plan instead of patching it. These include fabricated dependencies that don't exist, load-bearing assumptions that turn out to be false, or a misread premise that's quietly poisoned every conclusion downstream.
 
-If you're not reviewing, you're shipping roughly two real errors per generation. And occasionally a whole plan built on something that isn't true.
+## The feedback loop
+
+Once a reviewer points at an error, the generating model can patch it — the hard part is noticing a bug buried in its own output, not fixing it once someone else points to it. For reviewer findings, the main session needs explicit instructions to evaluate each finding instead of rubber-stamp it — LLMs have a strong pull toward agreeing with whatever they were just told, and a confident-sounding review triggers that instinct hard. Miscounts, contradictions, stale references — all verifiable on inspection, so the main session can separate signal from noise.
+
+Codex findings are different: new ideas or design-level critique — not point-and-verify, which leaves room for the main session's summary to drift. So for high-stakes Codex output I run a separate QA pass on the summary; a recent one caught a dropped citation, two invented connections, and a shifted severity grade.
+
+Across 1,500+ reviews, the reviewer catches roughly two real errors per artifact. Not reviewing means shipping that error density blind — and occasionally a whole plan built on something that isn't true.
 
 ## What Codex reviews add
 
