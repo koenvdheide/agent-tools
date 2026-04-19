@@ -4,7 +4,7 @@ Our AI overlords like to slip in some slop every now and then to keep us on our 
 
 That's the whole idea behind this marketplace. The plugins here make review a real step in your workflow to help you catch such errors early before they compound.
 
-My own setup: I work in Claude Code using Opus but run the `claude-reviewer` agent on Sonnet over anything that matters: code changes, plans, designs etc. Sonnet is cheaper (which adds up fast when you're reviewing constantly), surprisingly good at reviewing and crossing models like this seems to catch errors more reliably. 
+My own setup: I work in Claude Code using Opus but run the `claude-reviewer` agent on Sonnet over anything that matters: code changes, plans, designs etc. Sonnet is cheaper (which adds up fast when you're reviewing constantly), surprisingly good at reviewing and crossing models like this seems to catch errors more reliably.
 
 I hit `/qa` to trigger a review on basically anything a Claude Code session produces. I collected the statistics of these review calls:
 
@@ -27,6 +27,20 @@ The **1,500+ reviewer runs** over 30+ projects (code, bug hunting, architecture 
 Every so often it catches something bad enough that you scrap the plan instead of patching it. These include fabricated dependencies that don't exist, load-bearing assumptions that turn out to be false, or a misread premise that's quietly poisoned every conclusion downstream.
 
 If you're not reviewing, you're shipping roughly two real errors per generation. And occasionally a whole plan built on something that isn't true.
+
+## What Codex reviews add
+
+The stats above are about the `reviewer` subagent, which catches mechanical errors in output. `/codex:codex` is a different layer: it reviews **designs and plans** adversarially, usually before implementation. Red-team mode structures output under two headings — **Breakage** (what could fail) and **Simplifications** (what's over-engineered and can be cut).
+
+When I ran Codex red-team against the spec for `claude-reviewer` itself, it proposed seven Simplifications — four shipped verbatim, one I applied partially, one I kept as-is, one I didn't apply. Zero of them were wording tweaks. Every finding was a whole-concept cut — a flag, a layer, a file, a rename, a misaligned default — with a named target and a one-sentence safety rationale. Codex doesn't have a single thing it's good at flagging; it has a disposition for spotting speculative complexity wherever it lives.
+
+**Breakage** catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests actually prove, operational risks in a rollout. In security-adjacent work it often surfaces prompt-injection risks or trust-boundary mistakes the plan took for granted.
+
+Codex is most useful applied to a spec or plan *before* implementation, where removing a layer or fixing a premise is a free win rather than a refactor. Findings come with enough reasoning to either apply or reject on an informed basis — the review is adversarial by default, but not hand-wavy.
+
+## Why Gemini too
+
+The same red-team shape applies to `/gemini:gemini` — Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
 
 ## Plugins
 
@@ -68,7 +82,6 @@ There is also a fork of the popular brainstorming plugin that incorporates /qa a
 ```text
 /plugin install brainstorming@review-plugins
 ```
-
 
 ## Dependencies between plugins
 
