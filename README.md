@@ -95,6 +95,8 @@ There is also a fork of the popular brainstorming plugin that incorporates /qa a
 /plugin install brainstorming@review-plugins
 ```
 
+Refresh later with `/plugin marketplace update review-plugins`.
+
 ## Dependencies between plugins
 
 Three of the four plugins call the `reviewer` subagent from `claude-reviewer`:
