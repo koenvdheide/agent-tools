@@ -50,6 +50,10 @@ Codex is most useful applied to a spec or plan *before* implementation, where re
 
 The same red-team shape applies to `/gemini` — Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
 
+## Iterating to convergence
+
+Single-pass review catches a lot, but specs and plans benefit from repeated review-fix-review cycles — each round tends to surface a deeper layer than the last. Both `codex` and `gemini` have a **convergence mode** section in their SKILL.md that turns the one-shot call into a user-gated loop: apply fixes, continue or stop, repeat. The same instructions warn about the failure mode where cumulative "valid" findings quietly pull the artifact away from the original brief — the scope-drift spiral — and tell Claude when to stop and re-confirm scope instead of continuing.
+
 ## Plugins
 
 | Plugin | Slash command | Source repo | Description |
