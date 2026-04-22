@@ -71,7 +71,7 @@ Add the marketplace:
 /plugin marketplace add koenvdheide/review-plugins
 ```
 
-Install `claude-reviewer` **first** — the other plugins work better with its `reviewer` subagent for mandatory QA steps:
+Recommended to install `claude-reviewer` **first** as the other plugins work better with its `reviewer` subagent for mandatory QA steps:
 
 ```text
 /plugin install claude-reviewer@review-plugins
@@ -83,7 +83,7 @@ If you have a Codex subscription there is a skill that wraps the Codex CLI for r
 /plugin install codex@review-plugins
 ```
 
-And for the theater kids there is the same for the Gemini CLI:
+And for the theater kids there is the Gemini CLI wrapper too:
 
 ```text
 /plugin install gemini@review-plugins
