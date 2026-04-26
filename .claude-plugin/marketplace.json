@@ -1,11 +1,11 @@
 {
-  "name": "review-plugins",
+  "name": "agent-tools",
   "owner": {
     "name": "Koen van der Heide"
   },
   "metadata": {
-    "description": "Plugins for reviewing AI-generated output — reviewer subagent, external LLM CLI wrappers, and a brainstorming workflow.",
-    "version": "1.0.0"
+    "description": "Workflow plugins for Claude Code: external LLM CLI wrappers, QA reviewer subagent, brainstorming, and session-handoff prep.",
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -50,6 +50,17 @@
       "description": "Spec-document brainstorming skill: /brainstorming:brainstorming walks from idea to approved spec via clarifying questions and External Review Round with reviewer subagent + /codex:codex red-team. Fork of the brainstorming skill from obra/superpowers.",
       "category": "workflow",
       "keywords": ["brainstorming", "spec", "design", "review"],
+      "license": "MIT"
+    },
+    {
+      "name": "prep-compact",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/koenvdheide/prep-compact.git"
+      },
+      "description": "Warm-handoff sidecar that drafts tailored /compact instructions when the context window fills. A Stop hook maintains an on-disk handoff JSON; the /prep-compact skill reads it and adds an analytical layer (decisions, constraints, blockers, next-step).",
+      "category": "workflow",
+      "keywords": ["compact", "context-management", "session", "handoff"],
       "license": "MIT"
     }
   ]
