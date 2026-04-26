@@ -1,4 +1,4 @@
-# review-plugins
+# agent-tools
 
 Our AI overlords like to slip in some slop every now and then to keep us on our toes. But there is a saving grace: they're error-prone when generating, but good at catching these same errors when reviewing. The same model that'll confidently make up an API call will flag that exact fabrication when you paste it back and ask it to look for issues. And it gets better when you cross models: e.g. Sonnet reviewing Opus, or sending a plan through Codex for a second opinion, catches way more than any single model reviewing itself.
 
@@ -62,44 +62,51 @@ Single-pass review catches a lot, but specs and plans benefit from repeated revi
 | `codex` | `/codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner — brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
 | `gemini` | `/gemini` | [koenvdheide/gemini-skill](https://github.com/koenvdheide/gemini-skill) | Wraps the Gemini CLI — independent analysis from a different model family. |
 | `brainstorming` | `/brainstorming` | [koenvdheide/brainstorming-skill](https://github.com/koenvdheide/brainstorming-skill) | Spec-document brainstorming workflow with External Review Round (reviewer + /codex:codex). Fork of obra/superpowers. |
+| `prep-compact` | `/prep-compact` | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Warm-handoff sidecar that drafts tailored `/compact` instructions when the context window fills. |
 
 ## Install
 
 Add the marketplace:
 
 ```text
-/plugin marketplace add koenvdheide/review-plugins
+/plugin marketplace add koenvdheide/agent-tools
 ```
 
 Recommended to install `claude-reviewer` **first** as the other plugins work better with its `reviewer` subagent for mandatory QA steps:
 
 ```text
-/plugin install claude-reviewer@review-plugins
+/plugin install claude-reviewer@agent-tools
 ```
 
 If you have a Codex subscription there is a skill that wraps the Codex CLI for review sessions:
 
 ```text
-/plugin install codex@review-plugins
+/plugin install codex@agent-tools
 ```
 
 And for the theater kids there is the Gemini CLI wrapper too:
 
 ```text
-/plugin install gemini@review-plugins
+/plugin install gemini@agent-tools
 ```
 
 There is also a fork of the popular brainstorming plugin that incorporates /qa and /codex review calls for every major step:
 
 ```text
-/plugin install brainstorming@review-plugins
+/plugin install brainstorming@agent-tools
 ```
 
-Refresh later with `/plugin marketplace update review-plugins`.
+And `prep-compact` for a warm session-handoff that drafts tailored `/compact` instructions when the context window fills:
+
+```text
+/plugin install prep-compact@agent-tools
+```
+
+Refresh later with `/plugin marketplace update agent-tools`.
 
 ## Dependencies between plugins
 
-Three of the four plugins call the `reviewer` subagent from `claude-reviewer`:
+Three of the five plugins call the `reviewer` subagent from `claude-reviewer`:
 
 - `codex` invokes `reviewer` for mandatory QA on high-stakes modes (plan-review, red-team, diff-review, exhausted-hypotheses, attack-surface)
 - `gemini` does the same for its high-stakes modes
@@ -109,7 +116,7 @@ Claude Code's plugin manifest has no auto-install dependency field, so install `
 
 ## Attribution
 
-`brainstorming@review-plugins` is a fork of the `brainstorming` skill from [obra/superpowers](https://github.com/obra/superpowers), MIT-licensed (© 2025 Jesse Vincent). Upstream license text is preserved in the source repo at [koenvdheide/brainstorming-skill](https://github.com/koenvdheide/brainstorming-skill).
+`brainstorming@agent-tools` is a fork of the `brainstorming` skill from [obra/superpowers](https://github.com/obra/superpowers), MIT-licensed (© 2025 Jesse Vincent). Upstream license text is preserved in the source repo at [koenvdheide/brainstorming-skill](https://github.com/koenvdheide/brainstorming-skill).
 
 ## License
 
