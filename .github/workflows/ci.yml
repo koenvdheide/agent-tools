@@ -1,0 +1,14 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate marketplace manifest
+        run: |
+          python3 -c "import json; d=json.load(open('.claude-plugin/marketplace.json', encoding='utf-8')); assert d.get('name') and d.get('owner') and d.get('plugins'), 'missing required marketplace fields'; assert all(p.get('name') and p.get('source') for p in d['plugins']), 'a plugin entry is missing name/source'; print('marketplace.json OK:', len(d['plugins']), 'plugins')"

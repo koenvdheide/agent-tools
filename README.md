@@ -99,6 +99,8 @@ And `prep-compact` for a warm session-handoff that drafts tailored `/compact` in
 /plugin install prep-compact@agent-tools
 ```
 
+After installing, run `/reload-plugins` to activate everything in the current session (or restart Claude Code).
+
 Refresh later with `/plugin marketplace update agent-tools`.
 
 ## Dependencies between plugins
