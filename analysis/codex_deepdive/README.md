@@ -68,7 +68,35 @@ Record findings and decisions here, then run the pilot label sheet and the two g
 adopted findings". If either is unstable, revise the prompt or buckets and re-pilot.
 
 ## Pilot outcome
-<filled at Stage 0>
+The Stage 0 pilot did its job: it showed the original detector was undercounting badly. Three bugs, all in the pre-pilot `extract.py`:
+
+- it required a literal `Mode:` line in the *command*, so it dropped the bulk of real reviews (~355 piped-file calls of the form `cat artifact.md | codex exec -`, where the prompt and `Mode:` live in the file, not the command line);
+- it de-duped on `(session, command)` identity, so transcript event-duplication (the same tool-use repeated) was mislabeled `retry-dup` and dropped;
+- it grouped convergence on a `Previously identified findings:` marker that never appears in real commands, so it reported 0 chains.
+
+Net effect: ~172 reviews / 0 chains, against a far larger true corpus. Rather than patch the filter, I rebuilt detection (the `extract.py` and `enumerate.py` docstrings are now the authoritative spec):
+
+- enumerate every Bash command containing `codex`, de-duped by Bash tool-use id;
+- separate real invocations from `cat`/`rm`/`git` of codex files (`is_invocation`);
+- classify review vs non-review by output shape (`## Breakage` / Verdict / Findings) and narration, not by `Mode:`-in-command;
+- reconstruct convergence by `-o` output-slug lineage (strip `-r2`/`-v3`/round suffixes); ≥2 distinct-output rounds = a chain.
+
+Rebuilt run: **~450 reviews, ~50 convergence chains, ~270 rounds, deepest 32**, across 9 projects. Triangulated three ways: the 8-subagent manual read (~62 chains), the deterministic `classify_corpus.py` over the broad enumeration (~46 chains), and ~60 versioned `-rN/-vN` output-file series still on disk.
+
+Impact was then judged by 8 per-project subagents reading full outputs and tracing follow-through at `transcript:line` (results in `out/impact_synthesis.md`): ~1,300 findings (~3/review), ~2% false-finding rate, ~32% reaching a plan/direction change, ~52 chains with ~62% converging, zero full scraps. The formal classify/validate pipeline (`schema.json`, `classify_prompt.md`, `aggregate.py`, `validate.py`) stays in the repo as the stricter contract; the executed pass was the lighter subagent read over the rebuilt bundles.
+
+This supersedes "Run order" step 1 and the `(session, command)` retry-dedup limitation above (now keyed on Bash tool-use id).
+
+## Residual detector limitations (flagged in a later Codex diff-review)
+A post-rebuild Codex diff-review surfaced more detector issues. None move the headline counts (those are bracketed by the three-way triangulation above, and every published figure carries a `~`), but a reusable version would need them fixed:
+
+- `enumerate.py::find_output` pairs output by basename across the whole transcript, so a reused `-o` slug or a same-named file elsewhere can attach the wrong output, which then skews classification and chain tagging.
+- Chain identity is `(project, session, slug_stem)` with no temporal-adjacency, transcript, or sidechain key, so independent reviews of one file in a session — or a main-plus-sidechain pair — can merge.
+- `slug_stem` strips trailing bare digits unconditionally, so meaningful IDs (`codex-2026.txt`, `codex-rfc-9110.txt`) collapse into broader stems.
+- Retry de-dup keys on the first 200 output chars and treats empty output as distinct, so same-preamble rounds can drop and no-output repeats can form a spurious chain.
+- `EXEC_RE` is substring-based (a quoted `codex exec` in another command counts; `codex.cmd exec` is missed); `REVIEW_OUT_RE` is broad enough to promote some non-review outputs and misses the unspaced `NEEDS-MAJOR` / `NEEDS-MINOR` form.
+
+A reusable version would centralise one detector core (`extract.py` and `classify_corpus.py` currently duplicate it), pair output by invocation index with a stop at the next call, and gate chains on temporal adjacency. For this one-shot audit, the triangulated counts stand.
 
 ## Privacy and provenance
 Raw bundles hold client and academic content, so they stay local and git-ignored. Only this
