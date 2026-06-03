@@ -24,7 +24,7 @@ The **1,500+ reviewer runs** over 30+ projects (code, bug hunting, architecture 
 | Logic errors | ~5% | Boolean OR masking a missing field check |
 | Hallucinations / factual errors | ~2% | Fabricated citations, invented claims, wrong function calls |
 
-Every so often it catches something bad enough that you scrap the plan instead of patching it. These include fabricated dependencies that don't exist, load-bearing assumptions that turn out to be false, or a misread premise that's quietly poisoned every conclusion downstream.
+Every so often it catches something bad enough that you rework the plan instead of patching it. These include fabricated dependencies that don't exist, load-bearing assumptions that turn out to be false, or a misread premise that's quietly poisoned every conclusion downstream.
 
 ## The feedback loop
 
@@ -36,23 +36,42 @@ Across 1,500+ reviews, the reviewer catches roughly two real errors per artifact
 
 ## What Codex reviews add
 
-The stats above are about the `reviewer` subagent, which catches mechanical errors in output. `/codex` is a different layer: it reviews **designs and plans** adversarially, usually before implementation. Red-team mode structures output under two headings — **Breakage** (what could fail) and **Simplifications** (what's over-engineered and can be cut).
+The stats above are about the `reviewer` subagent, which catches mechanical errors in output. `/codex` is a different layer: it reviews **designs and plans** adversarially, usually before implementation. Red-team mode structures output under two headings: **Breakage** (what could fail) and **Simplifications** (what's over-engineered and can be cut).
 
-**Breakage** catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests actually prove, operational risks in a rollout. In security-adjacent work it often surfaces prompt-injection risks or trust-boundary mistakes the plan took for granted.
+To put numbers on this I went back through my own Claude Code transcripts and had subagents read every Codex review in full and trace what I did with it afterwards. It's one operator's history, so read it as an internal audit rather than a benchmark, but it's a real sample: about 450 Codex review calls across 9 projects (code, plus academic-archival and pharma research), ~436 of them judged in full after dropping retries and a handful of mislabelled non-reviews. Across that set, roughly:
 
-**Simplification** matters because LLM-generated plans drift toward over-engineering. A model left to plan on its own will add abstractions "for robustness," flags "for flexibility," tiers "for future expansion" etc. An adversarial second pass from another model catches it before implementation bakes it in.
+- about 1,300 distinct findings, call it 3 a review
+- around 1,070 were real flaws and ~540 were valid improvements (overlapping categories, not additive)
+- only ~28 of those findings were false or invalid, a **~2.1% false-finding rate**
+- I acted on ~94% of the reviews in some form, though mostly in part (I'd take some findings and leave others); outright rejection of a whole review was rare, ~2 of them
+- **~32% went past a local edit into a plan or direction change** (a spec revision, a resequenced rollout, a premise I had to go fix), which is the number I actually care about
 
-When I ran Codex red-team against the spec for `claude-reviewer` itself, it proposed seven Simplifications — four shipped verbatim, one I applied partially, one I kept as-is, one I didn't apply. Zero of them were wording tweaks. Every finding was a whole-concept cut — a flag, a layer, a file, a rename, a misaligned default — with a named target and a one-sentence safety rationale. Codex doesn't have a single thing it's good at flagging; it has a disposition for spotting speculative complexity wherever it lives.
+**Breakage** catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests prove, operational risk in a rollout. In security-adjacent work it's surfaced prompt-injection or trust-boundary mistakes the plan took for granted. The flaw mix matches that (of the real ones: ~213 correctness, ~159 a missing step, ~110 operational, ~109 a wrong premise, ~37 security), and on the academic projects it tilts toward evidence (~188 citation findings: wrong publisher, a citation year lifted from an archive date, once a source that flatly contradicted the claim it was cited for). A few concrete ones:
 
-Codex is most useful applied to a spec or plan *before* implementation, where removing a layer or fixing a premise is a free win rather than a refactor. Findings come with enough reasoning to either apply or reject on an informed basis — the review is adversarial by default, but not hand-wavy.
+- a migration spec that would have corrupted every file it wrote (`Set-Content -NoNewline` with no `-Encoding` on Windows PowerShell 5.1, which defaults to UTF-16)
+- a plan pointing register writes at the wrong module, caught before 19 tasks ran against it
+- a redaction guard that leaked the secret it guarded by echoing the denied name into its own error log
+- the reminder that force-push isn't erasure (sensitive commits stay reachable through forks, PR refs and caches after a history rewrite)
+
+**Simplification** matters because LLM-generated plans drift toward over-engineering: a model left to plan on its own adds abstractions "for robustness," flags "for flexibility," tiers "for future expansion." An adversarial pass from another model can catch it before implementation bakes it in (~116 of the real flaws were over-engineering). Two I cut on its say-so: a configurable state-directory option a plan had added "for flexibility" that no caller needed and that would have quietly broken the existing uninstall path; and a third fallback tier in a config-resolution chain that let a tool emit an authoritative-looking result from a weaker substitute (collapsed to two tiers plus fail-closed, so it now stops and reports "unavailable" instead).
+
+Worth being honest about the weak spot: subjective style review. A chain where I had Codex vet a CLAUDE.md file for "AI tells" ran about 38% false (it flagged standard curly-quote typography as a tell, called a required `Co-Authored-By` trailer "attribution pollution," and read a deliberately Git-Bash-only scope as a missing feature). Code-correctness, operational, security, and domain-factual citation findings are where it's most reliably right; taste is where it misfires. Most of the other false findings are incomplete-prompt artifacts (Codex assuming a file is missing because it wasn't in the snippet I piped in) rather than hallucination. Codex is most useful on a spec or plan *before* implementation, where cutting a layer or fixing a premise is a free win rather than a refactor, and the findings come with enough reasoning to apply or reject on the spot.
+
+## Convergence mode (Codex)
+
+Single-pass review catches a lot, but a spec usually has more than one layer of problems, and fixing the top one exposes the next. Convergence mode turns the one-shot call into a user-gated loop: Codex reviews, I apply fixes, it re-reviews the new version, repeat until it stops finding things that matter (or I call it). Each round runs the same command over the evolving file, so the main thing changing round to round is the artifact. It's also where simplification compounds: round one cuts the obvious layer, round two sees the next one now that it's exposed.
+
+In the transcripts this was about 52 review chains, and **~62% reached an affirmative verdict in-session** (CONVERGED / READY / no-redesign-needed). When it works, each round comes back with less to fix than the last:
+
+- an enrichment red-team: 6 findings → 5 → 4 → 3 → 2 → CONVERGED
+- a spec review: 11 → 5 → 1 → CONVERGED
+- a compaction eval-plan: NEEDS-MAJOR → MINOR → MINOR → MINOR → READY
+
+The deepest chains ran 28 and 32 rounds, though those were mostly iterative QC and sanitisation where flaw density stayed flat (a real loop, just lower-stakes than rescuing a design). The other ~38% don't converge inside the session, and that's worth knowing too: sometimes the spec is genuinely contested and stays mixed for rounds, sometimes I'm using the loop as feedback rather than a gate and ship anyway after settling the question empirically. The mode's own failure case is the scope-drift spiral, where each round's "valid" finding is locally reasonable but the accumulation quietly pulls the artifact off the original brief. Both the `codex` and `gemini` SKILL.md call this out and tell Claude when to stop and re-confirm scope instead of grinding out another round. (When I red-teamed the plan behind these numbers, Codex caught a bug in my own counting logic before it shipped wrong figures.)
 
 ## Why Gemini too
 
-The same red-team shape applies to `/gemini` — Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
-
-## Iterating to convergence
-
-Single-pass review catches a lot, but specs and plans benefit from repeated review-fix-review cycles — each round tends to surface a deeper layer than the last. Both `codex` and `gemini` have a **convergence mode** section in their SKILL.md that turns the one-shot call into a user-gated loop: apply fixes, continue or stop, repeat. The same instructions warn about the failure mode where cumulative "valid" findings quietly pull the artifact away from the original brief — the scope-drift spiral — and tell Claude when to stop and re-confirm scope instead of continuing.
+The same red-team shape applies to `/gemini`: Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case, and the same convergence loop. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
 
 ## Context handoff: prep-compact
 
