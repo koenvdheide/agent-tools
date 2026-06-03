@@ -7,7 +7,7 @@ ADOPTED = {"adopted", "partial"}
 
 
 def _has_valid_adopted(ep):
-    return any(f["validity"] in ("valid", "debatable") and f["verdict"] in ADOPTED
+    return any(f["validity"] == "valid" and f["verdict"] in ADOPTED
               for f in ep["findings"])
 
 
@@ -44,6 +44,7 @@ def aggregate(episodes):
         },
         "episode": {
             "pct_with_valid_adopted": round(100 * ep_hits / n, 1) if n else 0.0,
+            "pct_single_shot_with_valid_adopted": round(100 * sum(_has_valid_adopted(e) for e in single) / len(single), 1) if single else 0.0,
             "n_single_shot": len(single),
         },
         "chain": {
