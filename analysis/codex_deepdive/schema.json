@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "required": ["episode_id", "project_slug", "mode", "artifact_type", "findings"],
+  "properties": {
+    "episode_id": {"type": "string"},
+    "project_slug": {"type": "string"},
+    "mode": {"type": "string"},
+    "chain_id": {"type": ["string", "null"]},
+    "round_index": {"type": "integer"},
+    "artifact_type": {"type": "string", "enum": ["code", "prose", "plan", "security", "mixed"]},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["heading", "category", "validity", "verdict", "impact_tier", "evidence_quote", "location"],
+        "properties": {
+          "heading": {"type": "string", "enum": ["Breakage", "Simplification", "other"]},
+          "category": {"type": "string", "enum": ["correctness", "evidence/citation", "operational-risk", "simplification", "security/trust-boundary", "other"]},
+          "validity": {"type": "string", "enum": ["valid", "invalid", "debatable"]},
+          "verdict": {"type": "string", "enum": ["adopted", "partial", "rejected", "deferred"]},
+          "impact_tier": {"type": "string", "enum": ["not-observed", "local-edit", "plan/direction-change", "scrapped"]},
+          "evidence_quote": {"type": "string"},
+          "location": {"type": "string"}
+        }
+      }
+    }
+  }
+}
