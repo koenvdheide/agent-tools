@@ -49,5 +49,40 @@ class TestExtract(unittest.TestCase):
         table = extract.audit_table(self.basic)
         self.assertEqual(sum(table.values()), 3)
 
+    def test_pairing_stops_at_next_codex_call(self):
+        # two episodes reuse the same -o slug; the first must NOT grab the second's later Read
+        events = [
+            {"type": "assistant", "sessionId": "sx", "timestamp": "t1", "message": {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "c1", "name": "Bash", "input": {"command": "codex exec -o c:/tmp/codex-x.txt - \nMode: red-team"}}]}},
+            {"type": "assistant", "sessionId": "sx", "timestamp": "t2", "message": {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "c2", "name": "Bash", "input": {"command": "codex exec -o c:/tmp/codex-x.txt - \nMode: red-team\nPreviously identified findings:\n- x"}}]}},
+            {"type": "assistant", "sessionId": "sx", "timestamp": "t3", "message": {"role": "assistant", "content": [
+                {"type": "tool_use", "id": "r1", "name": "Read", "input": {"file_path": "c:/tmp/codex-x.txt"}}]}},
+            {"type": "user", "sessionId": "sx", "timestamp": "t4", "message": {"role": "user", "content": [
+                {"type": "tool_result", "tool_use_id": "r1", "content": "## Breakage\n- second only"}]}},
+        ]
+        eps = extract.extract_events(events)
+        c1 = next(e for e in eps if e.tool_use_id == "c1")
+        c2 = next(e for e in eps if e.tool_use_id == "c2")
+        self.assertEqual(c1.audit, "no-output")
+        self.assertIsNone(c1.output)
+        self.assertIn("second only", c2.output)
+
+    def test_unrelated_reviews_not_merged_into_one_chain(self):
+        def codex(tid, ts, body):
+            return {"type": "assistant", "sessionId": "sy", "timestamp": ts, "message": {"role": "assistant", "content": [
+                {"type": "tool_use", "id": tid, "name": "Bash", "input": {"command": f"codex exec -o c:/tmp/codex-{tid}.txt - \n{body}"}}]}}
+        events = [
+            codex("a1", "t1", "Mode: red-team"),
+            codex("a2", "t2", "Mode: red-team\nPreviously identified findings:\n- f"),
+            codex("a3", "t3", "Mode: diff-review"),
+        ]
+        eps = [e for e in extract.extract_events(events) if e.audit != "excluded-mode"]
+        chains = {e.chain_id for e in eps if e.chain_id}
+        self.assertEqual(len(chains), 1)  # only a1+a2 form a chain
+        a3 = next(e for e in eps if e.mode == "diff-review")
+        self.assertIsNone(a3.chain_id)    # standalone review NOT absorbed
+        self.assertEqual(a3.round_index, 0)
+
 if __name__ == "__main__":
     unittest.main()

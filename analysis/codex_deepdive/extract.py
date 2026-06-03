@@ -10,7 +10,7 @@ EXCLUDED_MODES = {"brainstorm", "debug", "explain", "spec-extraction",
 CODEX_RE = re.compile(r"codex\s+exec\b")
 REVIEW_SUBCMD_RE = re.compile(r"codex\s+exec\s+review\b")
 MODE_RE = re.compile(r"Mode:\s*([a-z][a-z-]*)")
-SLUG_RE = re.compile(r"-o\s+\S*?(codex-[A-Za-z0-9._-]+\.txt)")
+SLUG_RE = re.compile(r"-o\s+(\S*codex-[A-Za-z0-9._/\\:-]+\.txt)")
 PREV_FINDINGS_RE = re.compile(r"Previously identified findings:", re.I)
 
 EDIT_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
@@ -82,6 +82,10 @@ def parse_slug(cmd):
     return m.group(1) if m else None
 
 
+def _basename(p):
+    return os.path.basename(p.replace("\\", "/")) if p else p
+
+
 def _tool_result_text(events, tool_use_id):
     for ev in events:
         if ev.get("type") != "user":
@@ -101,15 +105,18 @@ def _tool_result_text(events, tool_use_id):
 
 
 def _pair_output(events, start_idx, slug):
-    """Find a Read of `slug` after start_idx; return its tool_result text or None."""
+    """Find a Read of `slug` before the next Codex call; return its text or None."""
     if not slug:
         return None
+    target = _basename(slug)
     for ev in events[start_idx + 1:]:
         for tu in tool_uses(ev):
-            if tu.get("name") == "Read":
-                fp = (tu.get("input") or {}).get("file_path", "")
-                if os.path.basename(fp) == slug:
-                    return _tool_result_text(events, tu["id"])
+            name = tu.get("name")
+            inp = tu.get("input") or {}
+            if name == "Bash" and CODEX_RE.search(inp.get("command", "")):
+                return None  # reached the next Codex call; output not found before it
+            if name == "Read" and _basename(inp.get("file_path", "")) == target:
+                return _tool_result_text(events, tu["id"])
     return None
 
 
@@ -130,8 +137,7 @@ def _follow_through(events, start_idx):
     return out, qa
 
 
-def extract_file(path):
-    events = load_events(path)
+def extract_events(events, path="<mem>"):
     episodes = []
     for idx, ev in enumerate(events):
         if ev.get("type") != "assistant":
@@ -164,6 +170,10 @@ def extract_file(path):
     return episodes
 
 
+def extract_file(path):
+    return extract_events(load_events(path), path)
+
+
 def _collapse_retries(episodes):
     """Mark exact-duplicate commands within one session as retry-dup (in place)."""
     seen = {}
@@ -178,23 +188,33 @@ def _collapse_retries(episodes):
 
 
 def _tag_chains(episodes):
-    """Group consecutive review episodes in a session into convergence chains."""
+    """Group an anchor review + its consecutive round-N>=2 marker rounds into one chain."""
     by_session = {}
     for ep in episodes:
         if ep.audit in ("excluded-mode", "retry-dup"):
             continue
         by_session.setdefault(ep.session, []).append(ep)
+    counter = 0
     for session, eps in by_session.items():
         eps.sort(key=lambda e: e.ts)
-        if len(eps) < 2:
-            continue
-        has_round2 = any(e.round_index >= 1 for e in eps)
-        if not has_round2:
-            continue
-        chain_id = f"{session}:chain"
-        for i, e in enumerate(eps):
-            e.chain_id = chain_id
-            e.round_index = i
+        i = 0
+        while i < len(eps):
+            members = [eps[i]]
+            j = i + 1
+            while j < len(eps) and eps[j].round_index == 1:
+                members.append(eps[j])
+                j += 1
+            if len(members) >= 2:
+                cid = f"{session}:chain{counter}"
+                counter += 1
+                for r, e in enumerate(members):
+                    e.chain_id = cid
+                    e.round_index = r
+                i = j
+            else:
+                eps[i].chain_id = None
+                eps[i].round_index = 0
+                i += 1
 
 
 def audit_table(episodes):
