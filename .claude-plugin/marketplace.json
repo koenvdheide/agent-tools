@@ -4,8 +4,8 @@
     "name": "Koen van der Heide"
   },
   "metadata": {
-    "description": "Workflow plugins for Claude Code: external LLM CLI wrappers, QA reviewer subagent, and session-handoff prep.",
-    "version": "1.2.0"
+    "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, a QA reviewer subagent, session-handoff prep, and a build-pipeline orchestrator.",
+    "version": "1.3.0"
   },
   "plugins": [
     {
@@ -50,6 +50,17 @@
       "description": "Warm-handoff sidecar that drafts tailored /compact instructions when the context window fills. A Stop hook maintains an on-disk handoff JSON; the /prep-compact skill reads it and adds an analytical layer (decisions, constraints, blockers, next-step).",
       "category": "workflow",
       "keywords": ["compact", "context-management", "session", "handoff"],
+      "license": "MIT"
+    },
+    {
+      "name": "orchestrated-build-flow",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/koenvdheide/orchestrated-build-flow.git"
+      },
+      "description": "Drives a non-trivial build from brainstorming through spec, plan, and subagent execution, inserting Codex convergence checkpoints (spec red-team, plan-review, diff-review) with receipt-gated, resumable phase transitions.",
+      "category": "workflow",
+      "keywords": ["workflow", "orchestration", "planning", "codex", "superpowers"],
       "license": "MIT"
     }
   ]
