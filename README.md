@@ -6,7 +6,7 @@ That's the idea behind most of the plugins in this marketplace. They make review
 
 A setup that works well: drive Claude Code with Opus, but run the `claude-reviewer` agent on Sonnet over anything that matters (code changes, plans, designs). Sonnet is cheaper, which adds up fast when you're reviewing constantly, it's surprisingly good at reviewing, and crossing models like this seems to catch errors more reliably.
 
-I hit `/qa` to trigger a review on basically anything a Claude Code session produces. I collected the statistics of these review calls:
+I hit `/claude-reviewer:qa` to trigger a review on basically anything a Claude Code session produces. I collected the statistics of these review calls:
 
 The **1,500+ reviewer runs** over 30+ projects (code, bug hunting, architecture and design docs, academic archival research and writing etc.) caught the following:
 
@@ -36,7 +36,7 @@ Across 1,500+ reviews, the reviewer catches roughly two real errors per artifact
 
 ## What Codex reviews add
 
-The stats above are about the `reviewer` subagent, which catches mechanical errors in output. `/codex` is a different layer: it reviews **designs and plans** adversarially, usually before implementation. Red-team mode structures output under two headings: **Breakage** (what could fail) and **Simplifications** (what's over-engineered and can be cut).
+The stats above are about the `reviewer` subagent, which catches mechanical errors in output. `/codex:codex` is a different layer: it reviews **designs and plans** adversarially, usually before implementation. Red-team mode structures output under two headings: **Breakage** (what could fail) and **Simplifications** (what's over-engineered and can be cut).
 
 To put numbers on this I went back through my own Claude Code transcripts and had subagents read every Codex review in full and trace what I did with it afterwards. It's one operator's history, so read it as an internal audit rather than a benchmark, but it's a real sample: about 450 Codex review calls across 9 projects (code, plus academic-archival and pharma research), ~436 of them judged in full after dropping retries and a handful of mislabelled non-reviews. Across that set, roughly:
 
@@ -71,7 +71,7 @@ The deepest chains ran 28 and 32 rounds, though those were mostly iterative QC a
 
 ## Why Gemini too
 
-The same red-team shape applies to `/gemini`: Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case, and the same convergence loop. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
+The same red-team shape applies to `/gemini:gemini`: Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case, and the same convergence loop. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
 
 ## Context handoff: prep-compact
 
@@ -79,7 +79,7 @@ The same red-team shape applies to `/gemini`: Breakage and Simplifications headi
 
 ## Build pipeline: orchestrated-build-flow
 
-The other plugins are review building blocks; `orchestrated-build-flow` composes them into one guided flow. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `codex` as a plugin dependency.
+The review plugins are building blocks; `orchestrated-build-flow` composes Codex review into one guided build pipeline. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `codex` as a plugin dependency.
 
 ## Plugins
 
@@ -141,4 +141,4 @@ Refresh later with `/plugin marketplace update agent-tools`.
 
 ## License
 
-MIT (see [`LICENSE`](LICENSE)). Individual plugins have their own licenses in their source repos — see each repo's `LICENSE` and `NOTICE` files.
+MIT (see [`LICENSE`](LICENSE)). Individual plugins have their own licenses in their source repos — see each repo's `LICENSE` file and any `NOTICE` file if present.
