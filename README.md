@@ -4,7 +4,7 @@ Our AI overlords like to slip in some slop every now and then to keep us on our 
 
 That's the idea behind most of the plugins in this marketplace. They make review a real step in your workflow to help you catch such errors early before they compound.
 
-My own setup: I work in Claude Code using Opus but run the `claude-reviewer` agent on Sonnet over anything that matters: code changes, plans, designs etc. Sonnet is cheaper (which adds up fast when you're reviewing constantly), surprisingly good at reviewing and crossing models like this seems to catch errors more reliably.
+A setup that works well: drive Claude Code with Opus, but run the `claude-reviewer` agent on Sonnet over anything that matters (code changes, plans, designs). Sonnet is cheaper, which adds up fast when you're reviewing constantly, it's surprisingly good at reviewing, and crossing models like this seems to catch errors more reliably.
 
 I hit `/qa` to trigger a review on basically anything a Claude Code session produces. I collected the statistics of these review calls:
 
@@ -77,6 +77,10 @@ The same red-team shape applies to `/gemini`: Breakage and Simplifications headi
 
 `prep-compact` solves a different agent-coding problem: long Claude Code sessions hit `/compact` eventually, and default compaction often loses session-specific context — what you decided not to do, what the user's preferences were, why a previous attempt failed. The plugin keeps a warm on-disk handoff and, on demand, drafts a tailored `/compact <instructions>` command that preserves the load-bearing context. Same spirit as the review tools: don't let the model silently degrade your work over time.
 
+## Build pipeline: orchestrated-build-flow
+
+The other plugins are review building blocks; `orchestrated-build-flow` composes them into one guided flow. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `codex` as a plugin dependency.
+
 ## Plugins
 
 | Plugin | Slash command | Source repo | Description |
@@ -85,6 +89,7 @@ The same red-team shape applies to `/gemini`: Breakage and Simplifications headi
 | `codex` | `/codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner — brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
 | `gemini` | `/gemini` | [koenvdheide/gemini-skill](https://github.com/koenvdheide/gemini-skill) | Wraps the Gemini CLI — independent analysis from a different model family. |
 | `prep-compact` | `/prep-compact` | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Warm-handoff sidecar that drafts tailored `/compact` instructions when the context window fills. |
+| `orchestrated-build-flow` | `/orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
 
 ## Install
 
@@ -118,18 +123,21 @@ And `prep-compact` for a warm session-handoff that drafts tailored `/compact` in
 /plugin install prep-compact@agent-tools
 ```
 
+And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipeline with Codex checkpoints (it pulls in `codex` automatically; the `superpowers-extended-cc` skills are a separate prerequisite, see that repo's README):
+
+```text
+/plugin install orchestrated-build-flow@agent-tools
+```
+
 After installing, run `/reload-plugins` to activate everything in the current session (or restart Claude Code).
 
 Refresh later with `/plugin marketplace update agent-tools`.
 
 ## Dependencies between plugins
 
-Two of the four plugins call the `reviewer` subagent from `claude-reviewer`:
+`codex` and `gemini` call the `reviewer` subagent from `claude-reviewer` for mandatory QA on high-stakes modes (plan-review, red-team, diff-review, exhausted-hypotheses, attack-surface). They document this rather than declaring it as a manifest dependency, so install `claude-reviewer` first; if the reviewer subagent is unavailable, they fall back to self-review with a flagged caveat (see each SKILL.md).
 
-- `codex` invokes `reviewer` for mandatory QA on high-stakes modes (plan-review, red-team, diff-review, exhausted-hypotheses, attack-surface)
-- `gemini` does the same for its high-stakes modes
-
-Claude Code's plugin manifest has no auto-install dependency field, so install `claude-reviewer` manually before the others. If the reviewer subagent is unavailable, the skills fall back to self-review with a flagged caveat (see each SKILL.md).
+`orchestrated-build-flow` does declare `codex` as a plugin dependency, so installing it pulls in `codex` automatically. It also needs the `superpowers-extended-cc` skills, which live in a different marketplace and so are a manual prerequisite (its README has the command).
 
 ## License
 
