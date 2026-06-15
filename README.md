@@ -85,11 +85,11 @@ The other plugins are review building blocks; `orchestrated-build-flow` composes
 
 | Plugin | Slash command | Source repo | Description |
 | --- | --- | --- | --- |
-| `claude-reviewer` | `/qa` | [koenvdheide/claude-reviewer](https://github.com/koenvdheide/claude-reviewer) | Reviewer subagent that catches miscounts, duplicates, stale totals, hallucinations, and internal contradictions. |
-| `codex` | `/codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner — brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
-| `gemini` | `/gemini` | [koenvdheide/gemini-skill](https://github.com/koenvdheide/gemini-skill) | Wraps the Gemini CLI — independent analysis from a different model family. |
-| `prep-compact` | `/prep-compact` | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Warm-handoff sidecar that drafts tailored `/compact` instructions when the context window fills. |
-| `orchestrated-build-flow` | `/orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
+| `claude-reviewer` | `/claude-reviewer:qa` | [koenvdheide/claude-reviewer](https://github.com/koenvdheide/claude-reviewer) | Reviewer subagent that catches miscounts, duplicates, stale totals, hallucinations, and internal contradictions. |
+| `codex` | `/codex:codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner — brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
+| `gemini` | `/gemini:gemini` | [koenvdheide/gemini-skill](https://github.com/koenvdheide/gemini-skill) | Wraps the Gemini CLI — independent analysis from a different model family. |
+| `prep-compact` | `/prep-compact:prep-compact` | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Warm-handoff sidecar that drafts tailored `/compact` instructions when the context window fills. |
+| `orchestrated-build-flow` | `/orchestrated-build-flow:orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
 
 ## Install
 
@@ -123,7 +123,7 @@ And `prep-compact` for a warm session-handoff that drafts tailored `/compact` in
 /plugin install prep-compact@agent-tools
 ```
 
-And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipeline with Codex checkpoints (it pulls in `codex` automatically; the `superpowers-extended-cc` skills are a separate prerequisite, see that repo's README):
+And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipeline with Codex checkpoints (it pulls in `codex` automatically; the `superpowers-extended-cc` skills are a separate prerequisite from [pcvelz/superpowers](https://github.com/pcvelz/superpowers) — the [orchestrated-build-flow README](https://github.com/koenvdheide/orchestrated-build-flow#prerequisites) has the exact command):
 
 ```text
 /plugin install orchestrated-build-flow@agent-tools
@@ -135,7 +135,7 @@ Refresh later with `/plugin marketplace update agent-tools`.
 
 ## Dependencies between plugins
 
-`codex` and `gemini` call the `reviewer` subagent from `claude-reviewer` for mandatory QA on high-stakes modes (plan-review, red-team, diff-review, exhausted-hypotheses, attack-surface). They document this rather than declaring it as a manifest dependency, so install `claude-reviewer` first; if the reviewer subagent is unavailable, they fall back to self-review with a flagged caveat (see each SKILL.md).
+`codex` and `gemini` call the `reviewer` subagent from `claude-reviewer` for mandatory QA on their high-stakes review modes (red-team, diff-review, and similar). They document this rather than declaring it as a manifest dependency, so install `claude-reviewer` first; if the reviewer subagent is unavailable, they fall back to self-review with a flagged caveat (see each SKILL.md).
 
 `orchestrated-build-flow` does declare `codex` as a plugin dependency, so installing it pulls in `codex` automatically. It also needs the `superpowers-extended-cc` skills, which live in a different marketplace and so are a manual prerequisite (its README has the command).
 
