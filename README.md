@@ -99,7 +99,15 @@ Add the marketplace:
 /plugin marketplace add koenvdheide/agent-tools
 ```
 
-Recommended to install `claude-reviewer` **first** — `codex` and `antigravity` work better with its `reviewer` subagent for mandatory QA steps (`prep-compact` is independent):
+> **Migrating from `gemini`:** that plugin is now `antigravity`, wrapping the Antigravity CLI
+> (`agy`) instead of the Gemini CLI, and it lives at
+> [koenvdheide/antigravity-skill](https://github.com/koenvdheide/antigravity-skill). A plugin's
+> name is its installation identity, so the rename does not convert an installed copy. Check
+> the scope with `claude plugin list --json`, then uninstall `gemini` and install
+> `antigravity` at that same scope; uninstall defaults to `user` and would leave a
+> project- or local-scoped copy behind. Invocation becomes `/antigravity:antigravity`.
+
+Recommended to install `claude-reviewer` **first** — `codex` requires its `reviewer` subagent for mandatory QA steps, and `antigravity` uses it as an optional extra pass (`prep-compact` is independent):
 
 ```text
 /plugin install claude-reviewer@agent-tools
@@ -135,7 +143,7 @@ Refresh later with `/plugin marketplace update agent-tools`.
 
 ## Dependencies between plugins
 
-`codex` and `antigravity` call the `reviewer` subagent from `claude-reviewer` for mandatory QA on their high-stakes review modes (red-team, diff-review, and similar). They document this rather than declaring it as a manifest dependency, so install `claude-reviewer` first; if the reviewer subagent is unavailable, they fall back to self-review with a flagged caveat (see each SKILL.md).
+`codex` calls the `reviewer` subagent from `claude-reviewer` for mandatory QA on its high-stakes review modes (red-team, diff-review, and similar), falling back to self-review with a flagged caveat when the subagent is unavailable. `antigravity` self-reviews against the same fidelity rules by default and treats the subagent as an optional extra pass. Neither declares it as a manifest dependency, so install `claude-reviewer` first if you want it (see each SKILL.md).
 
 `orchestrated-build-flow` does declare `codex` as a plugin dependency, so installing it pulls in `codex` automatically. It also needs the `superpowers-extended-cc` skills, which live in a different marketplace and so are a manual prerequisite (its README has the command).
 
