@@ -67,11 +67,11 @@ In the transcripts this was about 52 review chains, and **~62% reached an affirm
 - a spec review: 11 → 5 → 1 → CONVERGED
 - a compaction eval-plan: NEEDS-MAJOR → MINOR → MINOR → MINOR → READY
 
-The deepest chains ran 28 and 32 rounds, though those were mostly iterative QC and sanitisation where flaw density stayed flat (a real loop, just lower-stakes than rescuing a design). The other ~38% don't converge inside the session, and that's worth knowing too: sometimes the spec is genuinely contested and stays mixed for rounds, sometimes I'm using the loop as feedback rather than a gate and ship anyway after settling the question empirically. The mode's own failure case is the scope-drift spiral, where each round's "valid" finding is locally reasonable but the accumulation quietly pulls the artifact off the original brief. Both the `codex` and `gemini` SKILL.md call this out and tell Claude when to stop and re-confirm scope instead of grinding out another round. (When I red-teamed the plan behind these numbers, Codex caught a bug in my own counting logic before it shipped wrong figures.)
+The deepest chains ran 28 and 32 rounds, though those were mostly iterative QC and sanitisation where flaw density stayed flat (a real loop, just lower-stakes than rescuing a design). The other ~38% don't converge inside the session, and that's worth knowing too: sometimes the spec is genuinely contested and stays mixed for rounds, sometimes I'm using the loop as feedback rather than a gate and ship anyway after settling the question empirically. The mode's own failure case is the scope-drift spiral, where each round's "valid" finding is locally reasonable but the accumulation quietly pulls the artifact off the original brief. Both the `codex` and `antigravity` SKILL.md call this out and tell Claude when to stop and re-confirm scope instead of grinding out another round. (When I red-teamed the plan behind these numbers, Codex caught a bug in my own counting logic before it shipped wrong figures.)
 
-## Why Gemini too
+## Why Antigravity too
 
-The same red-team shape applies to `/gemini:gemini`: Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case, and the same convergence loop. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, when I want a cross-check on a Codex finding from a different model family, or when the prompt needs Gemini's 1M-token window. If you install one plugin beyond `claude-reviewer`, install `codex`.
+The same red-team shape applies to `/antigravity:antigravity`: Breakage and Simplifications headings, same prompt structure, same review-before-implementation use case, and the same convergence loop. In my usage Gemini produces less thorough reviews and shows less lateral thinking on open problems, so I treat it as a fallback rather than the default. I reach for it when Codex is rate-limited, or when I want a cross-check on a Codex finding from a different model family. If you install one plugin beyond `claude-reviewer`, install `codex`.
 
 ## Context handoff: prep-compact
 
@@ -87,7 +87,7 @@ The review plugins are building blocks; `orchestrated-build-flow` composes Codex
 | --- | --- | --- | --- |
 | `claude-reviewer` | `/claude-reviewer:qa` | [koenvdheide/claude-reviewer](https://github.com/koenvdheide/claude-reviewer) | Reviewer subagent that catches miscounts, duplicates, stale totals, hallucinations, and internal contradictions. |
 | `codex` | `/codex:codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner — brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
-| `gemini` | `/gemini:gemini` | [koenvdheide/gemini-skill](https://github.com/koenvdheide/gemini-skill) | Wraps the Gemini CLI — independent analysis from a different model family. |
+| `antigravity` | `/antigravity:antigravity` | [koenvdheide/antigravity-skill](https://github.com/koenvdheide/antigravity-skill) | Wraps the Antigravity CLI (`agy`) — independent analysis from a different model family. |
 | `prep-compact` | `/prep-compact:prep-compact` | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Warm-handoff sidecar that drafts tailored `/compact` instructions when the context window fills. |
 | `orchestrated-build-flow` | `/orchestrated-build-flow:orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
 
@@ -99,7 +99,7 @@ Add the marketplace:
 /plugin marketplace add koenvdheide/agent-tools
 ```
 
-Recommended to install `claude-reviewer` **first** — `codex` and `gemini` work better with its `reviewer` subagent for mandatory QA steps (`prep-compact` is independent):
+Recommended to install `claude-reviewer` **first** — `codex` and `antigravity` work better with its `reviewer` subagent for mandatory QA steps (`prep-compact` is independent):
 
 ```text
 /plugin install claude-reviewer@agent-tools
@@ -111,10 +111,10 @@ If you have a Codex subscription there is a skill that wraps the Codex CLI for r
 /plugin install codex@agent-tools
 ```
 
-And for the theater kids there is the Gemini CLI wrapper too:
+And for the theater kids there is the Antigravity CLI wrapper too:
 
 ```text
-/plugin install gemini@agent-tools
+/plugin install antigravity@agent-tools
 ```
 
 And `prep-compact` for a warm session-handoff that drafts tailored `/compact` instructions when the context window fills:
@@ -135,7 +135,7 @@ Refresh later with `/plugin marketplace update agent-tools`.
 
 ## Dependencies between plugins
 
-`codex` and `gemini` call the `reviewer` subagent from `claude-reviewer` for mandatory QA on their high-stakes review modes (red-team, diff-review, and similar). They document this rather than declaring it as a manifest dependency, so install `claude-reviewer` first; if the reviewer subagent is unavailable, they fall back to self-review with a flagged caveat (see each SKILL.md).
+`codex` and `antigravity` call the `reviewer` subagent from `claude-reviewer` for mandatory QA on their high-stakes review modes (red-team, diff-review, and similar). They document this rather than declaring it as a manifest dependency, so install `claude-reviewer` first; if the reviewer subagent is unavailable, they fall back to self-review with a flagged caveat (see each SKILL.md).
 
 `orchestrated-build-flow` does declare `codex` as a plugin dependency, so installing it pulls in `codex` automatically. It also needs the `superpowers-extended-cc` skills, which live in a different marketplace and so are a manual prerequisite (its README has the command).
 
