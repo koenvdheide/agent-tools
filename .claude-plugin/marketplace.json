@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, a QA reviewer subagent, session-handoff prep, and a build-pipeline orchestrator.",
-    "version": "2.1.0"
+    "version": "2.1.1"
   },
   "plugins": [
     {
@@ -36,7 +36,7 @@
         "source": "url",
         "url": "https://github.com/koenvdheide/antigravity-skill.git"
       },
-      "description": "Wraps the Antigravity CLI (agy) as an independent analysis partner from a different model family — /antigravity:antigravity skill for brainstorm, red-team, diff-review, and other modes. Replaces the gemini plugin, and \"review it with gemini\" means this skill",
+      "description": "Wraps the Antigravity CLI (agy) as an independent analysis partner from a different model family — /antigravity:antigravity skill for brainstorm, red-team, diff-review, and other modes. Replaces the gemini plugin",
       "category": "llm-tool",
       "keywords": ["antigravity", "agy", "gemini", "review", "llm", "cli", "red-team"],
       "license": "MIT"
