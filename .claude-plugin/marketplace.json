@@ -3,10 +3,8 @@
   "owner": {
     "name": "Koen van der Heide"
   },
-  "metadata": {
-    "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, a QA reviewer subagent, session-handoff prep, and a build-pipeline orchestrator.",
-    "version": "2.1.1"
-  },
+  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, a QA reviewer subagent, session-handoff prep, and a build-pipeline orchestrator.",
+  "version": "2.1.1",
   "plugins": [
     {
       "name": "claude-reviewer",
