@@ -3,20 +3,9 @@
   "owner": {
     "name": "Koen van der Heide"
   },
-  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, a QA reviewer subagent, session-handoff prep, and a build-pipeline orchestrator.",
+  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, session-handoff prep, and a build-pipeline orchestrator.",
   "version": "2.1.1",
   "plugins": [
-    {
-      "name": "claude-reviewer",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/koenvdheide/claude-reviewer.git"
-      },
-      "description": "QA reviewer subagent and /claude-reviewer:qa skill that catches miscounts, duplicates, stale totals, hallucinations, and internal contradictions in AI-generated output",
-      "category": "qa",
-      "keywords": ["qa", "review", "validation", "correctness"],
-      "license": "MIT"
-    },
     {
       "name": "codex",
       "source": {
