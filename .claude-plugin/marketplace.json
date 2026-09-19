@@ -4,7 +4,7 @@
     "name": "Koen van der Heide"
   },
   "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, session-handoff prep, and a build-pipeline orchestrator.",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "plugins": [
     {
       "name": "codex",
