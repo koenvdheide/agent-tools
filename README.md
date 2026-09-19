@@ -21,10 +21,10 @@ To put numbers on this I went back through my Claude Code transcripts and had su
 - about 1,300 distinct findings, call it 3 a review
 - around 1,070 were real flaws and ~540 were valid improvements (overlapping categories, not additive)
 - only ~28 of those findings were false or invalid, a ~2.1% false-finding rate
-- I acted on ~94% of the reviews, mostly in part (taking some findings and leaving others); outright rejection of a whole review was rare, ~2 of them
+- I acted on ~94% of the reviews, mostly in part (taking some findings and leaving others); I rejected two outright
 - ~32% went past a local edit into a plan or direction change (a spec revision, a resequenced rollout, a premise I had to go fix), which is the number I care about
 
-Breakage catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests prove, operational risk in a rollout. In security-adjacent work it's surfaced prompt-injection or trust-boundary mistakes the plan took for granted. The flaw mix matches that (of the real ones: ~213 correctness, ~159 a missing step, ~110 operational, ~109 a wrong premise, ~37 security). On the academic projects it tilts toward evidence (~188 citation findings: wrong publisher, a citation year lifted from an archive date, once a source that flatly contradicted the claim it was cited for). Four concrete ones:
+Breakage catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests prove, operational risk in a rollout. In security-adjacent work it's surfaced prompt-injection or trust-boundary mistakes the plan took for granted. The flaw mix matches that: about 630 of the real flaws break down as ~213 correctness, ~159 a missing step, ~110 operational, ~109 a wrong premise and ~37 security. On the academic projects it tilts toward evidence (~188 citation findings across those projects: wrong publisher, a citation year lifted from an archive date, once a source that flatly contradicted the claim it was cited for). Four concrete ones:
 
 - a migration spec that would have corrupted every file it wrote (`Set-Content -NoNewline` with no `-Encoding` on Windows PowerShell 5.1, which defaults to UTF-16)
 - a plan pointing register writes at the wrong module, caught before 19 tasks ran against it
@@ -33,7 +33,9 @@ Breakage catches what the plan's reasoning didn't account for: overlooked enviro
 
 Simplification matters because LLM-generated plans drift toward over-engineering: a model left to plan on its own adds abstractions "for robustness," flags "for flexibility," tiers "for future expansion." An adversarial pass from another model can catch it before implementation bakes it in (~116 of the real flaws were over-engineering). Two I cut on its say-so. One was a configurable state-directory option a plan had added "for flexibility" that no caller needed and that would have quietly broken the existing uninstall path. The other was a third fallback tier in a config-resolution chain that let a tool emit an authoritative-looking result from a weaker substitute (collapsed to two tiers plus fail-closed, so it now stops and reports "unavailable").
 
-The weak spot is subjective style review. A chain where I had Codex vet a CLAUDE.md file for "AI tells" ran about 38% false (it flagged standard curly-quote typography as a tell, called a required `Co-Authored-By` trailer "attribution pollution," and read a deliberately Git-Bash-only scope as a missing feature). Codex is most reliably right on code-correctness, operational, security and domain-factual citation findings, and misfires on taste. Most of the other false findings are incomplete-prompt artifacts, where Codex assumed a file was missing because it wasn't in the snippet I piped in. It's most useful on a spec or plan *before* implementation, where cutting a layer or fixing a premise is still a free win, and the findings come with enough reasoning to apply or reject on the spot.
+The weak spot is subjective style review. A chain where I had Codex vet a CLAUDE.md file for "AI tells" ran about 38% false (it flagged standard curly-quote typography as a tell, called a required `Co-Authored-By` trailer "attribution pollution," and read a deliberately Git-Bash-only scope as a missing feature). Codex is most reliably right on code-correctness, operational, security and domain-factual citation findings, and misfires on taste. Most of the other false findings are incomplete-prompt artifacts, where Codex assumed a file was missing because it wasn't in the snippet I piped in. Outright fabrication is rare.
+
+It's most useful on a spec or plan *before* implementation, where cutting a layer or fixing a premise is still a free win, and the findings come with enough reasoning to apply or reject on the spot.
 
 ## Convergence mode (Codex)
 
@@ -111,10 +113,6 @@ And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipe
 After installing, run `/reload-plugins` to activate everything in the current session (or restart Claude Code).
 
 Refresh later with `/plugin marketplace update agent-tools`, then `/plugin update <name>@agent-tools` for each plugin you want moved to the new version, then `/reload-plugins`. The marketplace refresh only updates the catalogue, and third-party marketplaces have auto-update off by default.
-
-## Dependencies between plugins
-
-`orchestrated-build-flow` does declare `codex` as a plugin dependency, so installing it pulls in `codex` automatically. It also needs the `superpowers-extended-cc` skills, which live in a different marketplace and so are a manual prerequisite (its README has the command).
 
 ## License
 
