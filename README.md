@@ -29,6 +29,10 @@ The weak spot is subjective style review. A chain where I had Codex vet a CLAUDE
 
 It's most useful on a spec or plan *before* implementation, where cutting a layer or fixing a premise is still a free win, and the findings come with enough reasoning to apply or reject on the spot.
 
+## Architectural ownership
+
+Both review plugins now ask where a behaviour or shared fact belongs before judging the fix. For code and technical plans, every review round includes an ownership check that follows dependencies and forks outside the diff, distinguishes adapter translation from compensating for another component's defect, and asks for the smallest fix in the owning component. Explain mode omits this check. The full checklists live with the [Codex skill](https://github.com/koenvdheide/codex-skill/blob/main/skills/codex/references/architectural-ownership.md) and [Antigravity skill](https://github.com/koenvdheide/antigravity-skill/blob/main/skills/antigravity/references/architectural-ownership.md).
+
 ## Convergence mode (Codex)
 
 Single-pass review catches a lot, but a spec usually has more than one layer of problems, and fixing the top one exposes the next. Convergence mode turns the one-shot call into a user-gated loop: Codex reviews, I apply fixes, it re-reviews the new version, repeat until it stops finding things that matter (or I call it). Each round runs the same command over the evolving file, so the artifact is the main thing changing round to round. Simplification also compounds there: round one cuts the obvious layer, round two sees the next one now that it's exposed.
