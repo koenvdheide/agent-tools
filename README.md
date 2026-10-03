@@ -38,9 +38,11 @@ A chain that works comes back with less to fix each round:
 
 The same red-team shape applies to `/antigravity`: Breakage and Simplifications headings, same prompt structure, same use before implementation, and the same convergence loop. In my usage Gemini produces less thorough reviews, hallucinates a LOT more and shows less lateral thinking on open problems, so I treat it as a fallback. I reach for it when Codex is rate-limited, or when I want a cross-check on a Codex finding from a different model family. If you install one plugin from here, install `codex`.
 
-## Context handoff: prep-compact
+## Compaction steering: better-compact
 
-`prep-compact` solves a different agent-coding problem. Long Claude Code sessions hit `/compact` eventually, and default compaction often loses session-specific context: what you decided not to do, what your preferences were, why a previous attempt failed. The plugin keeps a warm on-disk handoff and, on demand, drafts a tailored `/compact <instructions>` command that preserves the load-bearing context. Same spirit as the review tools: don't let the model silently degrade your work over time.
+`better-compact` solves a different agent-coding problem. Long Claude Code sessions hit `/compact` eventually, and default compaction often loses session-specific context: what you decided not to do, what your preferences were, why a previous attempt failed. A `session.compact` hook adds a brief to every compaction telling the summarizer what to keep — the goal, the next action, the files, the decisions and the open blockers. Automatic compactions get it too, which the old skill-based version could never steer. A second hook puts the context percentage in the status line so you can compact at a moment you choose. Same spirit as the review tools: don't let the model silently degrade your work over time.
+
+This plugin was called `prep-compact` through 3.2.0. The rename is handled by a `renames` entry in the marketplace, so an existing install migrates on the next `/plugin marketplace update`.
 
 ## Build pipeline: orchestrated-build-flow
 
@@ -52,7 +54,7 @@ The review plugins are building blocks; `orchestrated-build-flow` composes Codex
 | --- | --- | --- | --- |
 | `codex` | `/codex:codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner: brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
 | `antigravity` | `/antigravity:antigravity` | [koenvdheide/antigravity-skill](https://github.com/koenvdheide/antigravity-skill) | Wraps the Antigravity CLI (`agy`) for independent analysis from a different model family. |
-| `prep-compact` | `/prep-compact:prep-compact` | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Warm-handoff sidecar that drafts tailored `/compact` instructions when the context window fills. |
+| `better-compact` | — | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Two hooks, no command: steers every compaction with a brief that keeps goal, next step, files, decisions and state, and shows the context percentage in the status line. |
 | `orchestrated-build-flow` | `/orchestrated-build-flow:orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
 
 ## Install
@@ -75,10 +77,10 @@ And for the theatre kids there is the Antigravity CLI wrapper too:
 /plugin install antigravity@agent-tools
 ```
 
-And `prep-compact` for the warm session handoff:
+And `better-compact` to stop compaction eating the session out from under you:
 
 ```text
-/plugin install prep-compact@agent-tools
+/plugin install better-compact@agent-tools
 ```
 
 And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipeline with Codex checkpoints (it pulls in `codex` automatically; the `superpowers-extended-cc` skills are a separate prerequisite from [pcvelz/superpowers](https://github.com/pcvelz/superpowers), and the [orchestrated-build-flow README](https://github.com/koenvdheide/orchestrated-build-flow#prerequisites) has the exact command):

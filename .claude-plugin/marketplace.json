@@ -3,8 +3,9 @@
   "owner": {
     "name": "Koen van der Heide"
   },
-  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, session-handoff prep, and a build-pipeline orchestrator.",
-  "version": "3.0.0",
+  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, compaction steering, and a build-pipeline orchestrator.",
+  "version": "4.0.0",
+  "renames": { "prep-compact": "better-compact" },
   "plugins": [
     {
       "name": "codex",
@@ -29,14 +30,14 @@
       "license": "MIT"
     },
     {
-      "name": "prep-compact",
+      "name": "better-compact",
       "source": {
         "source": "url",
         "url": "https://github.com/koenvdheide/prep-compact.git"
       },
-      "description": "Warm-handoff sidecar that drafts tailored /compact instructions when the context window fills. A Stop hook maintains an on-disk handoff JSON; the /prep-compact skill reads it and adds an analytical layer (decisions, constraints, blockers, next-step).",
+      "description": "Steers every compaction, including automatic ones, with a brief that keeps goal, next step, files, decisions and state. A session.compact hook composes the instructions; a session.measure hook shows the context percentage in the status line.",
       "category": "workflow",
-      "keywords": ["compact", "context-management", "session", "handoff"],
+      "keywords": ["compact", "context-management", "hooks", "session"],
       "license": "MIT"
     },
     {
