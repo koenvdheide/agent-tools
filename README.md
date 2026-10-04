@@ -4,19 +4,19 @@ Our AI overlords like to slip in some slop every now and then to keep us on our 
 
 ## The feedback loop
 
-Once a reviewer points at an error, the generating model can patch it. The hard part is noticing a bug buried in its own output; the patch is easy once someone else points at it. The main session still needs explicit instructions to weigh each finding on its evidence, because LLMs have a strong pull toward agreeing with whatever they were just told, and a confident-sounding review triggers that instinct. Higher level model findings are often new ideas or design-level critique, and you can't settle those by inspection, so the main session's summary has room to drift. 
+Once a reviewer points at an error, the generating model can patch it; the hard part is noticing a bug buried in its own output. The main session still needs explicit instructions to weigh each finding on its evidence, because LLMs have a strong pull toward agreeing with whatever they were just told, and a confident-sounding review triggers that instinct. Higher level model findings are often new ideas or design-level critique, and you can't settle those by inspection, so the main session's summary has room to drift.
 
 ## What Codex reviews add
 
 `/codex` reviews designs and plans adversarially, usually before implementation. Red-team mode structures output under two headings, Breakage (what could fail) and Simplifications (what's over-engineered and can be cut).
 
-Breakage catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests prove, operational risk in a rollout. In security-adjacent work it's surfaced prompt-injection or trust-boundary mistakes the plan took for granted. The flaw mix matches that: correctness, a missing step, operational risk, a wrong premise, security. On the academic projects it tilts toward evidence: wrong publisher, a citation year lifted from an archive date, once a source that flatly contradicted the claim it was cited for. Four concrete ones:
+Breakage catches what the plan's reasoning didn't account for: overlooked environmental constraints, inverted premises (a step that treats a prerequisite as already satisfied when it isn't), evidence claims that outrun what the tests prove, operational risk in a rollout. In security-adjacent work it's surfaced prompt-injection or trust-boundary mistakes the plan took for granted. On the academic projects it tilts toward evidence: wrong publisher, a citation year lifted from an archive date, once a source that flatly contradicted the claim it was cited for. Three concrete ones:
 
 - a migration spec that would have corrupted every file it wrote
 - a plan pointing register writes at the wrong module, caught before 19 tasks ran against it
 - a redaction guard that leaked the secret it guarded by echoing the denied name into its own error log
 
-Simplification matters because LLM-generated plans drift toward over-engineering: a model left to plan on its own adds abstractions "for robustness," flags "for flexibility," tiers "for future expansion" and a disgusting amount of tests. a An adversarial pass from another model can catch it before implementation bakes it in. 
+Simplification matters because LLM-generated plans drift toward over-engineering: a model left to plan on its own adds abstractions "for robustness," flags "for flexibility," tiers "for future expansion" and a disgusting amount of tests. An adversarial pass from another model can catch it before implementation bakes it in.
 
 It's most useful on a spec or plan *before* implementation, where cutting a layer or fixing a premise is still a free win, and the findings come with enough reasoning to apply or reject on the spot.
 
@@ -26,9 +26,9 @@ Both review plugins also ask where a behaviour or shared fact belongs before jud
 
 ## Convergence mode (Codex)
 
-Single-pass review catches a lot, but a spec usually has more than one layer of problems, and fixing the top one exposes the next. Convergence mode turns the one-shot call into a user-gated loop: Codex reviews, I apply fixes, it re-reviews the new version, repeat until it stops finding things that matter (or I call it). Each round runs the same command over the evolving file, so the artifact is the main thing changing round to round. Simplification also compounds there: round one cuts the obvious layer, round two sees the next one now that it's exposed.
+Single-pass review catches a lot, but a spec usually has more than one layer of problems, and fixing the top one exposes the next. Convergence mode turns the one-shot call into a user-gated loop: Codex reviews, I apply fixes, it re-reviews the new version, repeat until it stops finding things that matter (or I call it). Simplification also compounds there: round one cuts the obvious layer, round two sees the next one now that it's exposed.
 
-A chain that works comes back with less to fix each round:
+Some chains from my own use:
 
 - an enrichment red-team: 6 findings → 5 → 4 → 3 → 2 → CONVERGED
 - a spec review: 11 → 5 → 1 → CONVERGED
@@ -36,7 +36,7 @@ A chain that works comes back with less to fix each round:
 
 ## Why Antigravity too
 
-The same red-team shape applies to `/antigravity`: Breakage and Simplifications headings, same prompt structure, same use before implementation, and the same convergence loop. In my usage Gemini produces less thorough reviews, hallucinates a LOT more and shows less lateral thinking on open problems, so I treat it as a fallback. I reach for it when Codex is rate-limited, or when I want a cross-check on a Codex finding from a different model family. If you install one plugin from here, install `codex`.
+The same red-team shape applies to `/antigravity`: Breakage and Simplifications headings, same prompt structure, same use before implementation, and the same convergence loop. In my usage Gemini produces less thorough reviews, hallucinates a LOT more and shows less lateral thinking on open problems, so I treat it as a fallback. I reach for it when Codex is rate-limited, or when I want a cross-check on a Codex finding from a different model family. If you install one review plugin from here, install `third-party-reviewers`.
 
 ## Review tool: third-party-reviewers
 
