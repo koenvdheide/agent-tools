@@ -44,6 +44,10 @@ The same red-team shape applies to `/antigravity`: Breakage and Simplifications 
 
 This plugin was called `prep-compact` through 3.2.0. The rename is handled by a `renames` entry in the marketplace, so an existing install migrates on the next `/plugin marketplace update`.
 
+## Temporary-file cleanup: cys
+
+Agents leave scratch behind: probe scripts, captured output, review prompts and their result files. `cys` gives the agent a `mcp__cys__register` tool for the temporary files it creates, and at the end of the turn a Stop hook lists the registered ones once, so the agent deletes what it no longer needs. CYS itself never deletes anything, and the agent keeps anything that is user-authored, tracked or still needed.
+
 ## Build pipeline: orchestrated-build-flow
 
 The review plugins are building blocks; `orchestrated-build-flow` composes Codex review into one guided build pipeline. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `codex` as a plugin dependency.
@@ -56,6 +60,7 @@ The review plugins are building blocks; `orchestrated-build-flow` composes Codex
 | `antigravity` | `/antigravity:antigravity` | [koenvdheide/antigravity-skill](https://github.com/koenvdheide/antigravity-skill) | Wraps the Antigravity CLI (`agy`) for independent analysis from a different model family. |
 | `better-compact` | — | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Two hooks, no command: steers every compaction with a brief that keeps goal, next step, files, decisions and state, and shows the context percentage in the status line. |
 | `orchestrated-build-flow` | `/orchestrated-build-flow:orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
+| `cys` | — | [koenvdheide/cys](https://github.com/koenvdheide/cys) | A register tool and a Stop hook: the agent registers each temporary file it makes, and at the end of the turn CYS lists them once so the agent cleans them up. |
 
 ## Install
 
@@ -87,6 +92,12 @@ And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipe
 
 ```text
 /plugin install orchestrated-build-flow@agent-tools
+```
+
+And `cys` so the agent cleans up the scratch files it leaves behind (needs Claude Code v2.1.287 or later):
+
+```text
+/plugin install cys@agent-tools
 ```
 
 After installing, run `/reload-plugins` to activate everything in the current session (or restart Claude Code).

@@ -3,8 +3,8 @@
   "owner": {
     "name": "Koen van der Heide"
   },
-  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, compaction steering, and a build-pipeline orchestrator.",
-  "version": "4.0.0",
+  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, compaction steering, temporary-file cleanup, and a build-pipeline orchestrator.",
+  "version": "4.1.0",
   "renames": { "prep-compact": "better-compact" },
   "plugins": [
     {
@@ -49,6 +49,17 @@
       "description": "Drives a non-trivial build from brainstorming through spec, plan, and subagent execution, inserting Codex convergence checkpoints (spec red-team, plan-review, diff-review) with receipt-gated, resumable phase transitions.",
       "category": "workflow",
       "keywords": ["workflow", "orchestration", "planning", "codex", "superpowers"],
+      "license": "MIT"
+    },
+    {
+      "name": "cys",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/koenvdheide/cys.git"
+      },
+      "description": "Asks the agent to clean up its temporary files. The agent registers each temporary path with a native tool; at Stop, CYS lists the registered paths once. It never deletes anything itself.",
+      "category": "workflow",
+      "keywords": ["cleanup", "temporary-files", "hooks", "session"],
       "license": "MIT"
     }
   ]
