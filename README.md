@@ -40,7 +40,7 @@ The same red-team shape applies to `/antigravity`: Breakage and Simplifications 
 
 ## Review tool: third-party-reviewers
 
-`third-party-reviewers` runs both CLIs itself, from a Claude Code mod: Claude starts a review with one tool call and keeps working, the status line shows its progress, and a cancel stops the CLI. It replaces the `codex` and `antigravity` plugins (keep `codex` while you use `orchestrated-build-flow`, which depends on it) and needs Claude Code v2.1.287 or later.
+`third-party-reviewers` runs both CLIs itself, from a Claude Code mod: Claude starts a review with one tool call and keeps working, the status line shows its progress, and a cancel stops the CLI. It replaces the `codex` and `antigravity` plugins (an `orchestrated-build-flow` older than 1.2.0 still depends on `codex`) and needs Claude Code v2.1.287 or later.
 
 ## Compaction steering: better-compact
 
@@ -54,7 +54,7 @@ Agents leave scratch behind: probe scripts, captured output, review prompts and 
 
 ## Build pipeline: orchestrated-build-flow
 
-The review plugins are building blocks; `orchestrated-build-flow` composes Codex review into one guided build pipeline. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `codex` as a plugin dependency.
+The review plugins are building blocks; `orchestrated-build-flow` composes Codex review into one guided build pipeline. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `third-party-reviewers` as a plugin dependency.
 
 ## Plugins
 
@@ -99,7 +99,7 @@ And `better-compact` to stop compaction eating the session out from under you:
 /plugin install better-compact@agent-tools
 ```
 
-And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipeline with Codex checkpoints (it pulls in `codex` automatically; the `superpowers-extended-cc` skills are a separate prerequisite from [pcvelz/superpowers](https://github.com/pcvelz/superpowers), and the [orchestrated-build-flow README](https://github.com/koenvdheide/orchestrated-build-flow#prerequisites) has the exact command):
+And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipeline with Codex checkpoints (it pulls in `third-party-reviewers` automatically; the `superpowers-extended-cc` skills are a separate prerequisite from [pcvelz/superpowers](https://github.com/pcvelz/superpowers), and the [orchestrated-build-flow README](https://github.com/koenvdheide/orchestrated-build-flow#prerequisites) has the exact command):
 
 ```text
 /plugin install orchestrated-build-flow@agent-tools
