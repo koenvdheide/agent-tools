@@ -57,7 +57,7 @@
         "source": "url",
         "url": "https://github.com/koenvdheide/cys.git"
       },
-      "description": "Asks the agent to clean up its temporary files. The agent registers each temporary path with a native tool; at Stop, CYS lists the registered paths once. It never deletes anything itself.",
+      "description": "Tracks the temporary files Claude creates and asks it to clean them up at the end of each turn. CYS never deletes anything itself.",
       "category": "workflow",
       "keywords": ["cleanup", "temporary-files", "hooks", "session"],
       "license": "MIT"
