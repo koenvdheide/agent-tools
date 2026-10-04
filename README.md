@@ -38,6 +38,10 @@ A chain that works comes back with less to fix each round:
 
 The same red-team shape applies to `/antigravity`: Breakage and Simplifications headings, same prompt structure, same use before implementation, and the same convergence loop. In my usage Gemini produces less thorough reviews, hallucinates a LOT more and shows less lateral thinking on open problems, so I treat it as a fallback. I reach for it when Codex is rate-limited, or when I want a cross-check on a Codex finding from a different model family. If you install one plugin from here, install `codex`.
 
+## Review tool: third-party-reviewers
+
+`third-party-reviewers` runs both CLIs itself, from a Claude Code mod: Claude starts a review with one tool call and keeps working, the status line shows its progress, and a cancel stops the CLI. It replaces the `codex` and `antigravity` plugins (keep `codex` while you use `orchestrated-build-flow`, which depends on it) and needs Claude Code v2.1.287 or later.
+
 ## Compaction steering: better-compact
 
 `better-compact` solves a different agent-coding problem. Long Claude Code sessions hit `/compact` eventually, and default compaction often loses session-specific context: what you decided not to do, what your preferences were, why a previous attempt failed. A `session.compact` hook adds a brief to every compaction telling the summarizer what to keep — the goal, the next action, the files, the decisions and the open blockers. Automatic compactions get it too, which the old skill-based version could never steer. A second hook puts the context percentage in the status line so you can compact at a moment you choose. Same spirit as the review tools: don't let the model silently degrade your work over time.
@@ -58,6 +62,7 @@ The review plugins are building blocks; `orchestrated-build-flow` composes Codex
 | --- | --- | --- | --- |
 | `codex` | `/codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner: brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
 | `antigravity` | `/antigravity` | [koenvdheide/antigravity-skill](https://github.com/koenvdheide/antigravity-skill) | Wraps the Antigravity CLI (`agy`) for independent analysis from a different model family. |
+| `third-party-reviewers` | `/codex`, `/antigravity` | [koenvdheide/third-party-reviewers](https://github.com/koenvdheide/third-party-reviewers) | Runs the Codex and Antigravity CLIs from a mod: one review tool, live status, a cancel that stops the CLI, and structured findings. |
 | `better-compact` | — | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Two hooks, no command: steers every compaction with a brief that keeps goal, next step, files, decisions and state, and shows the context percentage in the status line. |
 | `orchestrated-build-flow` | `/orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
 | `cys` | — | [koenvdheide/cys](https://github.com/koenvdheide/cys) | A register tool and a Stop hook: the agent registers each temporary file it makes, and at the end of the turn CYS lists them once so the agent cleans them up. |
@@ -80,6 +85,12 @@ And for the theatre kids there is the Antigravity CLI wrapper too:
 
 ```text
 /plugin install antigravity@agent-tools
+```
+
+Or `third-party-reviewers`, which runs both CLIs itself through a review tool and replaces those two:
+
+```text
+/plugin install third-party-reviewers@agent-tools
 ```
 
 And `better-compact` to stop compaction eating the session out from under you:
