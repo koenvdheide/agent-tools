@@ -22,7 +22,7 @@ It's most useful on a spec or plan *before* implementation, where cutting a laye
 
 ## Architectural ownership
 
-Both review plugins also ask where a behaviour or shared fact belongs before judging the fix. For code and technical plans, every review round includes an ownership check that follows dependencies and forks outside the diff, distinguishes adapter translation from compensating for another component's defect, and asks for the smallest fix in the owning component. Explain mode omits this check. The full checklists live with the [Codex skill](https://github.com/koenvdheide/codex-skill/blob/main/skills/codex/references/architectural-ownership.md) and [Antigravity skill](https://github.com/koenvdheide/antigravity-skill/blob/main/skills/antigravity/references/architectural-ownership.md).
+Reviews also ask where a behaviour or shared fact belongs before judging the fix. For code and technical plans, every review round includes an ownership check that follows dependencies and forks outside the diff, distinguishes adapter translation from compensating for another component's defect, and asks for the smallest fix in the owning component. Explain mode omits this check. The full checklist is in [third-party-reviewers](https://github.com/koenvdheide/third-party-reviewers/blob/main/hooks/cli.ts).
 
 ## Convergence mode (Codex)
 
@@ -36,11 +36,11 @@ Some chains from my own use:
 
 ## Why Antigravity too
 
-The same red-team shape applies to `/antigravity`: Breakage and Simplifications headings, same prompt structure, same use before implementation, and the same convergence loop. In my usage Gemini produces less thorough reviews, hallucinates a LOT more and shows less lateral thinking on open problems, so I treat it as a fallback. I reach for it when Codex is rate-limited, or when I want a cross-check on a Codex finding from a different model family. If you install one review plugin from here, install `third-party-reviewers`.
+The same red-team shape applies to `/antigravity`: Breakage and Simplifications headings, same prompt structure, same use before implementation, and the same convergence loop. In my usage Gemini produces less thorough reviews, hallucinates a LOT more and shows less lateral thinking on open problems, so I treat it as a fallback. I reach for it when Codex is rate-limited, or when I want a cross-check on a Codex finding from a different model family.
 
 ## Review tool: third-party-reviewers
 
-`third-party-reviewers` runs both CLIs itself, from a Claude Code mod: Claude starts a review with one tool call and keeps working, the status line shows its progress, and a cancel stops the CLI. It replaces the `codex` and `antigravity` plugins (an `orchestrated-build-flow` older than 1.2.0 still depends on `codex`) and needs Claude Code v2.1.287 or later.
+`third-party-reviewers` runs both CLIs itself, from a Claude Code mod: one tool call runs a review and returns its result, the status line shows its progress, and a cancel stops the CLI. It needs Claude Code v2.1.287 or later with mods on.
 
 ## Compaction steering: better-compact
 
@@ -54,14 +54,12 @@ Agents leave scratch behind: probe scripts, captured output, review prompts and 
 
 ## Build pipeline: orchestrated-build-flow
 
-The review plugins are building blocks; `orchestrated-build-flow` composes Codex review into one guided build pipeline. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `third-party-reviewers` as a plugin dependency.
+`third-party-reviewers` is a building block; `orchestrated-build-flow` composes Codex review into one guided build pipeline. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `third-party-reviewers` as a plugin dependency.
 
 ## Plugins
 
 | Plugin | Slash command | Source repo | Description |
 | --- | --- | --- | --- |
-| `codex` | `/codex` | [koenvdheide/codex-skill](https://github.com/koenvdheide/codex-skill) | Wraps the Codex CLI as an independent analysis partner: brainstorm, red-team, debug, plan-review, diff-review, and other modes. |
-| `antigravity` | `/antigravity` | [koenvdheide/antigravity-skill](https://github.com/koenvdheide/antigravity-skill) | Wraps the Antigravity CLI (`agy`) for independent analysis from a different model family. |
 | `third-party-reviewers` | `/codex`, `/antigravity` | [koenvdheide/third-party-reviewers](https://github.com/koenvdheide/third-party-reviewers) | Runs the Codex and Antigravity CLIs from a mod: one review tool, live status, a cancel that stops the CLI, and structured findings. |
 | `better-compact` | — | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Two hooks, no command: steers every compaction with a brief that keeps goal, next step, files, decisions and state, and shows the context percentage in the status line. |
 | `orchestrated-build-flow` | `/orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
@@ -75,19 +73,7 @@ Add the marketplace:
 /plugin marketplace add koenvdheide/agent-tools
 ```
 
-If you have a Codex subscription there is a skill that wraps the Codex CLI for review sessions:
-
-```text
-/plugin install codex@agent-tools
-```
-
-And for the theatre kids there is the Antigravity CLI wrapper too:
-
-```text
-/plugin install antigravity@agent-tools
-```
-
-Or `third-party-reviewers`, which runs both CLIs itself through a review tool and replaces those two:
+If you have a Codex subscription, `third-party-reviewers` runs Codex reviews through a review tool, and Antigravity ones for the theatre kids:
 
 ```text
 /plugin install third-party-reviewers@agent-tools

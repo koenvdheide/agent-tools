@@ -4,38 +4,16 @@
     "name": "Koen van der Heide"
   },
   "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, compaction steering, temporary-file cleanup, and a build-pipeline orchestrator.",
-  "version": "4.2.0",
+  "version": "5.0.0",
   "renames": { "prep-compact": "better-compact" },
   "plugins": [
-    {
-      "name": "codex",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/koenvdheide/codex-skill.git"
-      },
-      "description": "Wraps the Codex CLI as an independent analysis partner — /codex:codex skill for brainstorm, red-team, debug, plan-review, diff-review, and other modes",
-      "category": "llm-tool",
-      "keywords": ["codex", "review", "llm", "cli", "red-team"],
-      "license": "MIT"
-    },
-    {
-      "name": "antigravity",
-      "source": {
-        "source": "url",
-        "url": "https://github.com/koenvdheide/antigravity-skill.git"
-      },
-      "description": "Wraps the Antigravity CLI (agy) as an independent analysis partner from a different model family — /antigravity:antigravity skill for brainstorm, red-team, diff-review, and other modes. Replaces the gemini plugin",
-      "category": "llm-tool",
-      "keywords": ["antigravity", "agy", "gemini", "review", "llm", "cli", "red-team"],
-      "license": "MIT"
-    },
     {
       "name": "third-party-reviewers",
       "source": {
         "source": "url",
         "url": "https://github.com/koenvdheide/third-party-reviewers.git"
       },
-      "description": "Runs the Codex and Antigravity CLIs as reviewers from a mod: Claude starts a review with one tool call, the status line shows its progress, a cancel stops the CLI, and the findings come back structured. Carries its own /codex and /antigravity skills and replaces the codex and antigravity plugins.",
+      "description": "Runs the Codex and Antigravity CLIs as reviewers from a mod: one tool call runs a review and returns its result, the status line shows its progress, a cancel stops the CLI, and the findings come back structured. Carries its own /codex and /antigravity skills.",
       "category": "llm-tool",
       "keywords": ["codex", "antigravity", "agy", "gemini", "review", "llm", "red-team", "mod"],
       "license": "MIT"
