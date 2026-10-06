@@ -25,7 +25,7 @@
       },
       "description": "Steers every compaction, including automatic ones, with a brief that keeps goal, next step, files, decisions and state. A session.compact hook composes the instructions; a session.measure hook shows the context percentage in the status line.",
       "category": "workflow",
-      "keywords": ["compact", "context-management", "hooks", "session"],
+      "keywords": ["compact", "context-management", "mod", "session", "status-line"],
       "license": "MIT"
     },
     {
@@ -47,7 +47,7 @@
       },
       "description": "Tracks the temporary files Claude creates and asks it to clean them up at the end of each turn. CYS never deletes anything itself.",
       "category": "workflow",
-      "keywords": ["cleanup", "temporary-files", "hooks", "session"],
+      "keywords": ["cleanup", "temporary-files", "scratch-files", "housekeeping", "mod"],
       "license": "MIT"
     }
   ]
