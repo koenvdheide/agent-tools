@@ -46,8 +46,6 @@ The same red-team shape applies to `/antigravity`: Breakage and Simplifications 
 
 `better-compact` solves a different agent-coding problem. Long Claude Code sessions hit `/compact` eventually, and default compaction often loses session-specific context: what you decided not to do, what your preferences were, why a previous attempt failed. A `session.compact` hook adds a brief to every compaction telling the summarizer what to keep — the goal, the next action, the files, the decisions and the open blockers. Automatic compactions get it too, which the old skill-based version could never steer. A second hook puts the context percentage in the status line so you can compact at a moment you choose. Same spirit as the review tools: don't let the model silently degrade your work over time.
 
-This plugin was called `prep-compact` through 3.2.0. The rename is handled by a `renames` entry in the marketplace, so an existing install migrates on the next `/plugin marketplace update`.
-
 ## Temporary-file cleanup: cys
 
 Agents leave scratch behind: probe scripts, captured output, review prompts and their result files. `cys` gives the agent a `mcp__cys__register` tool for the temporary files it creates, and at the end of the turn a Stop hook lists the registered ones once, so the agent deletes what it no longer needs. CYS itself never deletes anything, and the agent keeps anything that is user-authored, tracked or still needed.

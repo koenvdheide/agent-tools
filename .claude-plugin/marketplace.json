@@ -5,7 +5,6 @@
   },
   "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, compaction steering, temporary-file cleanup, and a build-pipeline orchestrator.",
   "version": "5.0.0",
-  "renames": { "prep-compact": "better-compact" },
   "plugins": [
     {
       "name": "third-party-reviewers",
