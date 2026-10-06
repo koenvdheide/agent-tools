@@ -14,7 +14,7 @@
       },
       "description": "Runs the Codex and Antigravity CLIs as reviewers from a mod: one tool call runs a review and returns its result, the status line shows its progress, a cancel stops the CLI, and the findings come back structured. Carries its own /codex and /antigravity skills.",
       "category": "llm-tool",
-      "keywords": ["code-review", "second-opinion", "red-team", "brainstorm", "codex", "openai", "gemini", "antigravity", "agy"],
+      "keywords": ["code-review", "diff-review", "second-opinion", "red-team", "brainstorm", "codex", "openai", "gemini", "antigravity"],
       "license": "MIT"
     },
     {
