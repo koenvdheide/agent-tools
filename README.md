@@ -59,7 +59,7 @@ Agents leave scratch behind: probe scripts, captured output, review prompts and 
 | Plugin | Slash command | Source repo | Description |
 | --- | --- | --- | --- |
 | `third-party-reviewers` | `/codex`, `/antigravity` | [koenvdheide/third-party-reviewers](https://github.com/koenvdheide/third-party-reviewers) | Runs the Codex and Antigravity CLIs from a mod: one review tool, live status, a cancel that stops the CLI, and structured findings. |
-| `better-compact` | — | [koenvdheide/prep-compact](https://github.com/koenvdheide/prep-compact) | Hooks, no command: steers every compaction with a brief that keeps goal, next step, files, decisions and state, and offers a one-click `/compact` above the prompt once context runs high. |
+| `better-compact` | — | [koenvdheide/better-compact](https://github.com/koenvdheide/better-compact) | Hooks, no command: steers every compaction with a brief that keeps goal, next step, files, decisions and state, and offers a one-click `/compact` above the prompt once context runs high. |
 | `orchestrated-build-flow` | `/orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
 | `cys` | — | [koenvdheide/cys](https://github.com/koenvdheide/cys) | A register tool and a Stop hook: the agent registers each temporary file it makes, and at the end of the turn CYS lists them once so the agent cleans them up. |
 

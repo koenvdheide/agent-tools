@@ -21,7 +21,7 @@
       "name": "better-compact",
       "source": {
         "source": "url",
-        "url": "https://github.com/koenvdheide/prep-compact.git"
+        "url": "https://github.com/koenvdheide/better-compact.git"
       },
       "description": "Steers every compaction, including automatic ones, with a brief that keeps goal, next step, files, decisions and state. A session.compact hook composes the instructions; once context runs high, a button above the prompt shows the percentage and runs /compact when clicked.",
       "category": "workflow",
