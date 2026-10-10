@@ -44,7 +44,7 @@ The same red-team shape applies to `/antigravity`: Breakage and Simplifications 
 
 ## Compaction steering: better-compact
 
-`better-compact` solves a different agent-coding problem. Long Claude Code sessions hit `/compact` eventually, and default compaction often loses session-specific context: what you decided not to do, what your preferences were, why a previous attempt failed. A `session.compact` hook adds a brief to every compaction telling the summarizer what to keep — the goal, the next action, the files, the decisions and the open blockers. Automatic compactions get it too, which the old skill-based version could never steer. Once context runs high, a button above the prompt shows the percentage and runs `/compact` when you click it, so you compact at a moment you choose. Same spirit as the review tools: don't let the model silently degrade your work over time.
+`better-compact` solves a different agent-coding problem. Long Claude Code sessions hit `/compact` eventually, and default compaction often loses session-specific context: what you decided not to do, what your preferences were, why a previous attempt failed. A `session.compact` hook adds a brief to every compaction telling the summarizer what to keep — the goal, the next action, the files, the decisions and the open blockers. Automatic compactions get it too, which the old skill-based version could never steer. Once context runs high, a button above the prompt shows the percentage and runs `/compact` when you click it, so you compact at a moment you choose, before a long context eats into your usage limits and model performance. Same spirit as the review tools: don't let the model silently degrade your work over time.
 
 ## Temporary-file cleanup: cys
 

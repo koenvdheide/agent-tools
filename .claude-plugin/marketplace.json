@@ -23,7 +23,7 @@
         "source": "url",
         "url": "https://github.com/koenvdheide/better-compact.git"
       },
-      "description": "Steers every compaction, including automatic ones, with a brief that keeps goal, next step, files, decisions and state. A session.compact hook composes the instructions; once context runs high, a button above the prompt shows the percentage and runs /compact when clicked.",
+      "description": "Steers every compaction, including automatic ones, with a brief that keeps goal, next step, files, decisions and state. A session.compact hook composes the instructions; once context runs high, a button above the prompt shows the percentage and runs /compact when clicked, so you compact before a long context eats into your usage limits and model performance.",
       "category": "workflow",
       "keywords": ["compact", "context-management", "mod", "session"],
       "license": "MIT"
