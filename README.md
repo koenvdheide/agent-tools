@@ -70,13 +70,15 @@ The agents of one Claude Code Workflow run work side by side but hand back their
 
 ## Install
 
+Every plugin here is a [mod](https://code.claude.com/docs/en/plugins/mods/overview). Mods need Claude Code v2.1.287 or later and are on by default there.
+
 Add the marketplace:
 
 ```text
 /plugin marketplace add koenvdheide/agent-tools
 ```
 
-If you have a Codex subscription, `third-party-reviewers` runs Codex reviews through a review tool, and Antigravity ones for the theatre kids:
+If you have the Codex CLI installed and signed in, `third-party-reviewers` runs Codex reviews through a review tool, and Antigravity ones for the theatre kids:
 
 ```text
 /plugin install third-party-reviewers@agent-tools
@@ -94,13 +96,13 @@ And `orchestrated-build-flow` to run the whole brainstorm-to-implementation pipe
 /plugin install orchestrated-build-flow@agent-tools
 ```
 
-And `cys` so the agent cleans up the scratch files it leaves behind (needs Claude Code v2.1.287 or later):
+And `cys` so the agent cleans up the scratch files it leaves behind:
 
 ```text
 /plugin install cys@agent-tools
 ```
 
-And `workflow-board` so the agents of a Workflow run see each other's findings while they work (needs Claude Code with mods on; start a new session after installing it, because a session that loads it partway through may miss the note that tells Claude about the board):
+And `workflow-board` so the agents of a Workflow run see each other's findings while they work (start a new session after installing it, because a session that loads it partway through may miss the note that tells Claude about the board):
 
 ```text
 /plugin install workflow-board@agent-tools
@@ -108,7 +110,7 @@ And `workflow-board` so the agents of a Workflow run see each other's findings w
 
 After installing, run `/reload-plugins` to activate the other plugins in the current session (or restart Claude Code).
 
-Refresh later with `/plugin marketplace update agent-tools`, then `/plugin update <name>@agent-tools` for each plugin you want moved to the new version, then `/reload-plugins`. The marketplace refresh only updates the catalogue, and third-party marketplaces have auto-update off by default.
+Refresh later in `/plugin`: on the **Marketplaces** tab, select `agent-tools` and choose **Update marketplace**, which refreshes the catalogue and updates the plugins you installed from it. Third-party marketplaces have auto-update off by default.
 
 ## License
 
