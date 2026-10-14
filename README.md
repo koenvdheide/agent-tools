@@ -40,7 +40,7 @@ The same red-team shape applies to `/antigravity`: Breakage and Simplifications 
 
 ## Review tool: third-party-reviewers
 
-`third-party-reviewers` runs both CLIs itself, from a Claude Code mod: one tool call runs a review and returns its result, the status line shows its progress, and a cancel stops the CLI. It needs Claude Code v2.1.287 or later with mods on.
+`third-party-reviewers` runs both CLIs itself, from a Claude Code mod: one tool call starts a review and returns at once, the plugin tells Claude when it ends, the status line shows its progress, and a cancel stops the CLI. It needs Claude Code v2.1.287 or later with mods on.
 
 ## Compaction steering: better-compact
 
@@ -62,7 +62,7 @@ The agents of one Claude Code Workflow run work side by side but hand back their
 
 | Plugin | Slash command | Source repo | Description |
 | --- | --- | --- | --- |
-| `third-party-reviewers` | `/codex`, `/antigravity` | [koenvdheide/third-party-reviewers](https://github.com/koenvdheide/third-party-reviewers) | Runs the Codex and Antigravity CLIs from a mod: one review tool, live status, a cancel that stops the CLI, and structured findings. |
+| `third-party-reviewers` | `/codex`, `/antigravity` | [koenvdheide/third-party-reviewers](https://github.com/koenvdheide/third-party-reviewers) | Runs the Codex and Antigravity CLIs from a mod: review tools, live status, a cancel that stops the CLI, and structured findings. |
 | `better-compact` | — | [koenvdheide/better-compact](https://github.com/koenvdheide/better-compact) | Hooks, no command: steers every compaction with a brief that keeps goal, next step, files, decisions and state, and offers a one-click `/compact` above the prompt once context runs high. |
 | `orchestrated-build-flow` | `/orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
 | `cys` | — | [koenvdheide/cys](https://github.com/koenvdheide/cys) | A register tool and a Stop hook: the agent registers each temporary file it makes, and at the end of the turn CYS lists them once so the agent cleans them up. |
