@@ -54,6 +54,10 @@ Agents leave scratch behind: probe scripts, captured output, review prompts and 
 
 `third-party-reviewers` is a building block; `orchestrated-build-flow` composes Codex review into one guided build pipeline. It takes a non-trivial change from brainstorming through spec, plan, and subagent-driven implementation, and inserts Codex checkpoints at three points: the spec (red-team), the plan (plan-review), and the implementation diff (diff-review). Each checkpoint writes a durable receipt, so a skipped or stale review is caught and re-run, and an interrupted session resumes where it left off. It builds on the `superpowers-extended-cc` skills (a separate install) and declares `third-party-reviewers` as a plugin dependency.
 
+## Shared findings: workflow-board
+
+The agents of one Claude Code Workflow run work side by side but hand back their findings only when they finish. `workflow-board` gives them a shared board while they run: an agent posts what it finds and reads what its siblings found, so it can adjust its own lane and confirm or challenge their finds. New sibling entries also arrive as short pushes on its other tool results. A note the mod adds to the Workflow tool's description tells Claude about the board, and Claude asks the agents that should use it through their prompts. The board lives in the session's mod state and goes when the session ends.
+
 ## Plugins
 
 | Plugin | Slash command | Source repo | Description |
@@ -62,6 +66,7 @@ Agents leave scratch behind: probe scripts, captured output, review prompts and 
 | `better-compact` | — | [koenvdheide/better-compact](https://github.com/koenvdheide/better-compact) | Hooks, no command: steers every compaction with a brief that keeps goal, next step, files, decisions and state, and offers a one-click `/compact` above the prompt once context runs high. |
 | `orchestrated-build-flow` | `/orchestrated-build-flow` | [koenvdheide/orchestrated-build-flow](https://github.com/koenvdheide/orchestrated-build-flow) | Runs the brainstorm → spec → plan → execute pipeline with three Codex convergence checkpoints (spec, plan, diff) and resumable, receipt-gated phases. |
 | `cys` | — | [koenvdheide/cys](https://github.com/koenvdheide/cys) | A register tool and a Stop hook: the agent registers each temporary file it makes, and at the end of the turn CYS lists them once so the agent cleans them up. |
+| `workflow-board` | — | [koenvdheide/workflow-board](https://github.com/koenvdheide/workflow-board) | A `post` and a `read` tool for the agents of one Workflow run, plus short pushes of new sibling entries, so each agent sees the others' findings mid-run. |
 
 ## Install
 
@@ -95,7 +100,13 @@ And `cys` so the agent cleans up the scratch files it leaves behind (needs Claud
 /plugin install cys@agent-tools
 ```
 
-After installing, run `/reload-plugins` to activate everything in the current session (or restart Claude Code).
+And `workflow-board` so the agents of a Workflow run see each other's findings while they work (needs Claude Code with mods on; start a new session after installing it, because a session that loads it partway through may miss the note that tells Claude about the board):
+
+```text
+/plugin install workflow-board@agent-tools
+```
+
+After installing, run `/reload-plugins` to activate the other plugins in the current session (or restart Claude Code).
 
 Refresh later with `/plugin marketplace update agent-tools`, then `/plugin update <name>@agent-tools` for each plugin you want moved to the new version, then `/reload-plugins`. The marketplace refresh only updates the catalogue, and third-party marketplaces have auto-update off by default.
 

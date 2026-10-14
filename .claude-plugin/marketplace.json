@@ -3,8 +3,8 @@
   "owner": {
     "name": "Koen van der Heide"
   },
-  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, compaction steering, temporary-file cleanup, and a build-pipeline orchestrator.",
-  "version": "5.0.0",
+  "description": "Workflow and review plugins for Claude Code: external LLM CLI wrappers, compaction steering, temporary-file cleanup, a build-pipeline orchestrator, and a findings board for Workflow runs.",
+  "version": "5.1.0",
   "plugins": [
     {
       "name": "third-party-reviewers",
@@ -48,6 +48,17 @@
       "description": "Tracks the temporary files Claude creates and asks it to clean them up at the end of each turn. CYS never deletes anything itself.",
       "category": "workflow",
       "keywords": ["cleanup", "temporary-files", "scratch-files", "housekeeping", "mod"],
+      "license": "MIT"
+    },
+    {
+      "name": "workflow-board",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/koenvdheide/workflow-board.git"
+      },
+      "description": "Lets the parallel agents of a Claude Code Workflow run see each other's findings mid-run, so each can adjust its own lane and confirm or challenge the others' finds.",
+      "category": "workflow",
+      "keywords": ["workflow", "subagents", "blackboard", "findings", "mods"],
       "license": "MIT"
     }
   ]
